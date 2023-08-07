@@ -1,0 +1,5 @@
+- id: code-checker
+  name: Code-Checker
+  description: check python code
+  entry: code-checker
+  language: python

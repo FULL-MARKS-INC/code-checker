@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "code-checker"
+version = "0.1.0"
+description = ""
+authors = ["umezaki <umezaki@fullmarks.co.jp>"]
+readme = "README.md"
+packages = [{include = "code_checker"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
