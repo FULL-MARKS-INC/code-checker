@@ -10,6 +10,24 @@ packages = [{include = "code_checker"}]
 python = "^3.10"
 
 
+[tool.poetry.scripts]
+code-checker = 'code_checker.main:main'
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.0"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+
+[tool.black]
+line-length = 120
+skip-string-normalization = false
+target-version = ["py310"]
+
+
+[tool.flake8]
+max-line-length = 120
+max-complexity = 18
