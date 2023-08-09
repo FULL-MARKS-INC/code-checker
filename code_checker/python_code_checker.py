@@ -3,7 +3,7 @@ class PythonCodeChecker:
         self._file_path = file_path
         self._messages: list[str] = []
 
-        with open(file_path, "r") as f:
+        with open(file_path, "r", encoding="utf_8_sig") as f:
             self._source = f.read()
 
     def _check_uuid(self):
