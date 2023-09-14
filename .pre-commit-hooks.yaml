@@ -6,5 +6,5 @@
 - id: batch-yaml-checker
   name: Batch-Yaml-Checker
   description: check batch yaml
-  entry: bach-yaml-checker
+  entry: batch-yaml-checker
   language: python
