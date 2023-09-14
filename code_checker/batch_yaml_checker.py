@@ -5,7 +5,7 @@ import yaml
 class BatchYamlChecker:
     def __init__(self, file_path: str):
         with open(file_path, "r") as f:
-            self.batch_definitions = yaml.load(f, Loader=yaml.SafeLoader).get("batchs")
+            self.batch_definitions = yaml.load(f, Loader=yaml.SafeLoader).get("batchs") or []
 
     def check_batch_definitions(self):
         print("[INFO] バッチ定義YAMLファイルのチェックを開始します。")
