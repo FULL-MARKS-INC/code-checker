@@ -11,7 +11,8 @@ python = "^3.10"
 
 
 [tool.poetry.scripts]
-code-checker = 'code_checker.main:main'
+code-checker = 'code_checker.python_code_checker:main'
+batch-yaml-checker = 'code_checker.bach_yaml_checker:main'
 
 
 [tool.poetry.group.dev.dependencies]

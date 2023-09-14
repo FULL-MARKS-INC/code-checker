@@ -3,3 +3,8 @@
   description: check python code
   entry: code-checker
   language: python
+- id: batch-yaml-checker
+  name: Batch-Yaml-Checker
+  description: check batch yaml
+  entry: bach-yaml-checker
+  language: python

@@ -1,3 +1,6 @@
+import sys
+
+
 class PythonCodeChecker:
     def __init__(self, file_path: str):
         self._file_path = file_path
@@ -20,3 +23,18 @@ class PythonCodeChecker:
         self._check_uuid()
         self._check_static_method()
         return self._messages
+
+
+def main():
+    if len(sys.argv) < 2:
+        print("[ERROR] Pythonファイルが指定されていません")
+        sys.exit(1)
+
+    checker = PythonCodeChecker(file_path=sys.argv[1])
+    messages = checker.check_all()
+
+    for message in messages:
+        print(message)
+
+    if messages:
+        sys.exit(1)
