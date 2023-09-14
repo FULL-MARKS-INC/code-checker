@@ -8,11 +8,15 @@ class BatchYamlChecker:
             self.batch_definitions = yaml.load(f, Loader=yaml.SafeLoader).get("batchs")
 
     def check_batch_definitions(self):
+        print("[INFO] バッチ定義YAMLファイルのチェックを開始します。")
+
         is_exceeded_batch_name_character_number = False
 
         for batch_name in self.batch_definitions():
             if len(batch_name) > 48:
                 print(f"[ERROR] バッチ名は最大48文字にしてください。{batch_name}")
+
+        print("[INFO] バッチ定義YAMLファイルのチェックを終了します。")
 
         sys.exit(int(is_exceeded_batch_name_character_number))
 
