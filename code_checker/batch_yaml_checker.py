@@ -15,6 +15,7 @@ class BatchYamlChecker:
         for batch_name in self.batch_definitions:
             if len(batch_name) > 48:
                 print(f"[ERROR] バッチ名は最大48文字にしてください。{batch_name}")
+                is_exceeded_batch_name_character_number = True
 
         print("[INFO] バッチ定義YAMLファイルのチェックを終了します。")
 
