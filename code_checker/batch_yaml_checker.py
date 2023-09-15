@@ -13,8 +13,8 @@ class BatchYamlChecker:
         is_exceeded_batch_name_character_number = False
 
         for batch_name in self.batch_definitions:
-            if len(batch_name) > 48:
-                print(f"[ERROR] バッチ名は最大48文字にしてください。{batch_name}")
+            if len(f"clubjt-cron-{batch_name}-production") > 64:
+                print(f"[ERROR] バッチ名は共通部分を含めて最大64文字になるよう設定してください。{batch_name}(clubjt-cron-{batch_name}-production)")
                 is_exceeded_batch_name_character_number = True
 
         print("[INFO] バッチ定義YAMLファイルのチェックを終了します。")
