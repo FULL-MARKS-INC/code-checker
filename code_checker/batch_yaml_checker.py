@@ -1,6 +1,23 @@
+import re
 import sys
 
 import yaml
+
+
+def represent_str(dumper, instance):
+    if "\n" in instance:
+        instance = "\n".join([line.rstrip() for line in instance.splitlines()])
+        return dumper.represent_scalar("tag:yaml.org,2002:str", instance, style="|")
+    elif re.match(MATCH_REGEX, instance) or re.search(SEARCH_REGEX, instance):
+        return dumper.represent_scalar("tag:yaml.org,2002:str", instance, style="'")
+    else:
+        return dumper.represent_scalar("tag:yaml.org,2002:str", instance)
+
+
+yaml.add_representer(str, represent_str, Dumper=yaml.CSafeDumper)
+
+MATCH_REGEX = re.compile(r"[&*#!?|\-<>=%@]")
+SEARCH_REGEX = re.compile(r"[\[\]{}:\"]")
 
 
 class BatchYamlChecker:
@@ -27,6 +44,7 @@ class BatchYamlChecker:
                 yaml.dump(definition, f2)
 
         print("[INFO] バッチ定義YAMLファイルのチェックとソートを終了します。")
+
         sys.exit(int(is_error))
 
 
