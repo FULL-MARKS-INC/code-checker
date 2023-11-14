@@ -1,7 +1,7 @@
 from ruamel.yaml import YAML
 import sys
 
-yaml = YAML()
+yaml = YAML(typ="safe", pure=True)
 
 
 class BatchYamlChecker:
