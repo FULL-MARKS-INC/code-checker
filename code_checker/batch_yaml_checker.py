@@ -1,30 +1,14 @@
-import re
+from ruamel.yaml import YAML
 import sys
 
-import yaml
-
-
-def represent_str(dumper, instance):
-    if "\n" in instance:
-        instance = "\n".join([line.rstrip() for line in instance.splitlines()])
-        return dumper.represent_scalar("tag:yaml.org,2002:str", instance, style="|")
-    elif re.match(MATCH_REGEX, instance) or re.search(SEARCH_REGEX, instance):
-        return dumper.represent_scalar("tag:yaml.org,2002:str", instance, style="'")
-    else:
-        return dumper.represent_scalar("tag:yaml.org,2002:str", instance)
-
-
-yaml.add_representer(str, represent_str, Dumper=yaml.CSafeDumper)
-
-MATCH_REGEX = re.compile(r"[&*#!?|\-<>=%@]")
-SEARCH_REGEX = re.compile(r"[\[\]{}:\"]")
+yaml = YAML()
 
 
 class BatchYamlChecker:
     @classmethod
     def check_batch_yaml(cls, yaml_path: str):
         with open(yaml_path, "r") as f:
-            definition = yaml.load(f, Loader=yaml.SafeLoader)
+            definition = yaml.load(f)
 
         is_error = False
 
