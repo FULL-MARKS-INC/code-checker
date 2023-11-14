@@ -1,7 +1,10 @@
 from ruamel.yaml import YAML
 import sys
 
-yaml = YAML(typ="safe", pure=True)
+# typ="rt" → コメントを保持する
+yaml = YAML(typ="rt")
+# クォーテーションを保持する
+yaml.preserve_quotes = True
 
 
 class BatchYamlChecker:
