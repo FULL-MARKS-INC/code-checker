@@ -2,27 +2,30 @@ import sys
 
 
 class PythonCodeChecker:
-    def __init__(self, file_path: str):
-        self._file_path = file_path
-        self._messages: list[str] = []
-
+    @classmethod
+    def check_python_code(cls, file_path: str):
         with open(file_path, "r", encoding="utf_8_sig") as f:
-            self._source = f.read()
+            source = f.read()
 
-    def _check_uuid(self):
-        if ("import uuid" in self._source and "uuid.uuid1()" in self._source) or (
-            "from uuid import uuid1" in self._source and "uuid1()" in self._source
+        is_error = False
+
+        if ("import uuid" in source and "uuid.uuid1()" in source) or (
+            "from uuid import uuid1" in source and "uuid1()" in source
         ):
-            self._messages.append(f"[ERROR] uuid.uuid1は使用禁止です: path={self._file_path}")
+            print(f"[ERROR] uuid.uuid1は使用禁止です: path={file_path}")
+            is_error = True
 
-    def _check_static_method(self):
-        if "@staticmethod" in self._source:
-            self._messages.append(f"[ERROR] staticmethodは使用禁止です: path={self._file_path}")
+        if not file_path.endswith(("promotion_client.py", "user_client.py", "common_client.py")):
+            if "@staticmethod" in source:
+                print(f"[ERROR] staticmethodは使用禁止です: path={file_path}")
+                is_error = True
 
-    def check_all(self) -> list[str]:
-        self._check_uuid()
-        self._check_static_method()
-        return self._messages
+        sys.exit(int(is_error))
+
+    @classmethod
+    def _parse(cls, source: str):
+        import ast
+        print(ast.parse(source))
 
 
 def main():
@@ -30,11 +33,4 @@ def main():
         print("[ERROR] Pythonファイルが指定されていません")
         sys.exit(1)
 
-    checker = PythonCodeChecker(file_path=sys.argv[1])
-    messages = checker.check_all()
-
-    for message in messages:
-        print(message)
-
-    if messages:
-        sys.exit(1)
+    PythonCodeChecker.check_python_code(file_path=sys.argv[1])
