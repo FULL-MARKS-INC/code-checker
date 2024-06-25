@@ -1,13 +1,21 @@
+import ast
+import json
+import os
+
 from code_checker.python_code_checker import PythonCodeChecker
+from scripts.py_file_finder import PyFileFinder
 
-# pre-commitに組み込む前に、直接チェック・ソートを実行して動作確認
 
+class OperationPythonCodeCheck:
+    """
+    pythonコードチェックの動作確認
+    """
 
-def check_module_client_source():
-    module_dir_path = "C:\\Users\\umeza\\Documents\\donuts-root\\clubjt-server\\clubjt-impl\\clubjt_impl\\module"
-
-    PythonCodeChecker.check_python_code(file_path=f"{module_dir_path}/promotion_client.py")
+    @classmethod
+    def run(cls):
+        for check_target_path in PyFileFinder.find_py_file_paths():
+            PythonCodeChecker.check_python_code(file_path=check_target_path)
 
 
 if __name__ == "__main__":
-    check_module_client_source()
+    OperationPythonCodeCheck.run()

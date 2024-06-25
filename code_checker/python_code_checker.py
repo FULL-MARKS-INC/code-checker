@@ -22,6 +22,11 @@ class PythonCodeChecker:
             print(f"[ERROR] logging.WARNではなくlogging.WARNINGを使用してください: path={file_path}")
             return True
 
+        for log_level in ["[INFO]", "[WARN]", "[WARNING]", "[ERROR]"]:
+            if log_level in source:
+                print(f"[ERROR] ログレベル{log_level}はlevel引数に記載してください: path={file_path}")
+                return True
+
         return False
 
 
