@@ -7,25 +7,22 @@ class PythonCodeChecker:
         with open(file_path, "r", encoding="utf_8_sig") as f:
             source = f.read()
 
-        is_error = False
-
         if ("import uuid" in source and "uuid.uuid1()" in source) or (
             "from uuid import uuid1" in source and "uuid1()" in source
         ):
             print(f"[ERROR] uuid.uuid1は使用禁止です: path={file_path}")
-            is_error = True
+            return True
 
         if not file_path.endswith(("promotion_client.py", "user_client.py", "common_client.py")):
             if "@staticmethod" in source:
                 print(f"[ERROR] staticmethodは使用禁止です: path={file_path}")
-                is_error = True
+                return True
 
-        sys.exit(int(is_error))
+        if "logging.WARN" in source:
+            print(f"[ERROR] logging.WARNではなくlogging.WARNINGを使用してください: path={file_path}")
+            return True
 
-    @classmethod
-    def _parse(cls, source: str):
-        import ast
-        print(ast.parse(source))
+        return False
 
 
 def main():
