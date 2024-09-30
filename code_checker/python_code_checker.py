@@ -1,3 +1,4 @@
+import re
 import sys
 
 
@@ -25,6 +26,12 @@ class PythonCodeChecker:
         for log_level in ["[INFO]", "[WARN]", "[WARNING]", "[ERROR]"]:
             if log_level in source:
                 print(f"[ERROR] ログレベル{log_level}はlevel引数に記載してください: path={file_path}")
+                return True
+
+        if "tests" not in file_path:
+            common_date_evaluation = re.search(r"if.+\.(created_at|createdAt|updatedAt|updated_at).+", source)
+            if common_date_evaluation:
+                print(f"[ERROR] 評価実装にcreate_at/updated_atを使用しないでください: path={file_path}")
                 return True
 
         return False
