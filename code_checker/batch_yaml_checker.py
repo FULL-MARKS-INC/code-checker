@@ -1,5 +1,6 @@
-from ruamel.yaml import YAML
 import sys
+
+from ruamel.yaml import YAML
 
 # typ="rt" → コメントを保持する
 yaml = YAML(typ="rt")
@@ -36,6 +37,8 @@ class BatchYamlChecker:
 
 
 def main():
+    print(sys.argv)
+    exit(1)
     if len(sys.argv) < 2:
         print("[ERROR] Batch定義のYamlファイルが指定されていません")
         sys.exit(1)
