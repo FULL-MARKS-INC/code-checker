@@ -1,5 +1,7 @@
+import pathlib
 import sys
 
+import git
 from ruamel.yaml import YAML
 
 # typ="rt" → コメントを保持する
@@ -11,6 +13,9 @@ yaml.preserve_quotes = True
 class BatchYamlChecker:
     @classmethod
     def check_batch_yaml(cls, yaml_path: str):
+        repo = git.Repo(cls._get_root_path())
+        print(repo)
+        
         with open(yaml_path, "r") as f:
             definition = yaml.load(f)
 
@@ -35,11 +40,25 @@ class BatchYamlChecker:
 
         sys.exit(int(is_error))
 
+    @classmethod
+    def _get_root_path(cls):
+        """
+        clubjt-serverのルートディレクトリを取得
+        """
+        current = pathlib.Path(__file__)
+
+        while current.parent != current:
+            check_target = current / ".git"
+            if check_target.is_dir():
+                return current
+
+            current = current.parent
+
+        raise Exception("API定義の配置パスが見つかりませんでした")
+
+
 
 def main():
-    import pathlib
-    print(pathlib.Path(__file__))
-    exit(1)
     if len(sys.argv) < 2:
         print("[ERROR] Batch定義のYamlファイルが指定されていません")
         sys.exit(1)
