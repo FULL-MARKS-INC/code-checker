@@ -37,7 +37,8 @@ class BatchYamlChecker:
 
 
 def main():
-    print(sys.argv)
+    import pathlib
+    print(pathlib.Path(__file__))
     exit(1)
     if len(sys.argv) < 2:
         print("[ERROR] Batch定義のYamlファイルが指定されていません")
