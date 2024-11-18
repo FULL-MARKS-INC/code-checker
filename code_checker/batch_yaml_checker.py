@@ -13,10 +13,10 @@ yaml.preserve_quotes = True
 class BatchYamlChecker:
     @classmethod
     def check_batch_yaml(cls, yaml_path: str):
-        repo = git.Repo(cls._get_root_path())
+        repo = git.Repo(cls._get_root_path(yaml_path=yaml_path))
         print(repo.head.commit.message)
         exit(1)
-        
+
         with open(yaml_path, "r") as f:
             definition = yaml.load(f)
 
@@ -29,7 +29,9 @@ class BatchYamlChecker:
 
             for batch_name, _ in batch_items:
                 if len(f"clubjt-cron-{batch_name}-production") > 64:
-                    print(f"[ERROR] バッチ名は共通部分を含めて最大64文字になるよう設定してください。{batch_name}(clubjt-cron-{batch_name}-production)")
+                    print(
+                        f"[ERROR] バッチ名は共通部分を含めて最大64文字になるよう設定してください。{batch_name}(clubjt-cron-{batch_name}-production)"
+                    )
                     is_error = True
 
             definition["batches"] = dict(sorted(batch_items))
@@ -42,11 +44,11 @@ class BatchYamlChecker:
         sys.exit(int(is_error))
 
     @classmethod
-    def _get_root_path(cls):
+    def _get_root_path(cls, yaml_path: str):
         """
         clubjt-serverのルートディレクトリを取得
         """
-        current = pathlib.Path(__file__)
+        current = pathlib.Path(yaml_path)
 
         while current.parent != current:
             check_target = current / ".git"
@@ -56,7 +58,6 @@ class BatchYamlChecker:
             current = current.parent
 
         raise Exception("API定義の配置パスが見つかりませんでした")
-
 
 
 def main():
