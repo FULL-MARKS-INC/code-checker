@@ -53,9 +53,12 @@ class BatchYamlChecker:
         # 一つ上のclubjt-serverもチェックするようにする
         current = pathlib.Path(f"clubjt-server/{yaml_path}")
 
+        print("---------------------")
+
         while current.parent != current:
+            print(current)
             if current.name == "clubjt-server":
-                return current
+                return current.resolve()
 
             current = current.parent
 
