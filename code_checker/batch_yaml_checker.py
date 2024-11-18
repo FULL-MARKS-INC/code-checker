@@ -51,13 +51,14 @@ class BatchYamlChecker:
         current = pathlib.Path(yaml_path)
 
         while current.parent != current:
+            print(current)
             check_target = current / ".git"
             if check_target.is_dir():
                 return current
 
             current = current.parent
 
-        raise Exception("API定義の配置パスが見つかりませんでした")
+        raise Exception("gitディレクトリが見つかりませんでした")
 
 
 def main():
