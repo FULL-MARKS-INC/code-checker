@@ -57,7 +57,7 @@ class BatchYamlChecker:
 
         while current.parent != current:
             if current.name == "clubjt-server":
-                return current.resolve()
+                return current.parent.resolve()
 
             current = current.parent
 
