@@ -54,13 +54,13 @@ class BatchYamlChecker:
         current = pathlib.Path(f"clubjt-server/{yaml_path}")
 
         while current.parent != current:
-            check_target = "clubjt-server"
-            if check_target.is_dir():
-                return current
+            print(current.name)
+            # if current.is_dir():
+            #     return current
 
             current = current.parent
 
-        raise Exception("gitディレクトリが見つかりませんでした")
+        raise Exception("clubkt-serverディレクトリが見つかりませんでした")
 
 
 def main():
