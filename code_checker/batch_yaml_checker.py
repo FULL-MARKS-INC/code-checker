@@ -69,5 +69,6 @@ def main():
         print("[ERROR] Batch定義のYamlファイルが指定されていません")
         sys.exit(1)
 
-    print(sys.argv)
-    BatchYamlChecker.check_batch_yaml(yaml_path=sys.argv[1])
+    with open(sys.argv[1], "r") as f:
+        print(f.read())
+    BatchYamlChecker.check_batch_yaml(yaml_path=sys.argv[2])
