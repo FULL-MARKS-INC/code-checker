@@ -48,11 +48,13 @@ class BatchYamlChecker:
         """
         clubjt-serverのルートディレクトリを取得
         """
-        current = pathlib.Path(yaml_path)
+
+        # clubjt-cdk/def/batch/batch.yamlが渡される想定なので、clubjt-cdkでチェックが終了する。
+        # 一つ上のclubjt-serverもチェックするようにする
+        current = pathlib.Path(f"clubjt-server/{yaml_path}")
 
         while current.parent != current:
-            print(current)
-            check_target = current / ".git"
+            check_target = "clubjt-server"
             if check_target.is_dir():
                 return current
 
