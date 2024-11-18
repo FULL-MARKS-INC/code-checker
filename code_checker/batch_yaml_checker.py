@@ -54,9 +54,8 @@ class BatchYamlChecker:
         current = pathlib.Path(f"clubjt-server/{yaml_path}")
 
         while current.parent != current:
-            print(current.name)
-            # if current.is_dir():
-            #     return current
+            if current.name == "clubjt-server":
+                return current.resolve()
 
             current = current.parent
 
