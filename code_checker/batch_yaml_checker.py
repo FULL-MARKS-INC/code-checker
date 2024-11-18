@@ -14,7 +14,7 @@ class BatchYamlChecker:
     @classmethod
     def check_batch_yaml(cls, yaml_path: str):
         repo = git.Repo(cls._get_root_path(yaml_path=yaml_path))
-        print(repo.head.commit.message, "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        print(repo.head.commit.message)
         exit(1)
 
         with open(yaml_path, "r") as f:
@@ -69,4 +69,5 @@ def main():
         print("[ERROR] Batch定義のYamlファイルが指定されていません")
         sys.exit(1)
 
+    print(sys.argv)
     BatchYamlChecker.check_batch_yaml(yaml_path=sys.argv[1])
