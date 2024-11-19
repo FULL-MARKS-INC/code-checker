@@ -26,6 +26,7 @@ class BatchYamlChecker:
         ]
 
         if not staged_batch_yaml_paths:
+            # batch.yamlとbatch.yamlのどちらも変更が入っていなければチェックを実施しない
             exit(0)
 
         # clubjt-server/.git/COMMIT_EDITMSGに記載されたコミットメッセージに「batch.yaml変更」が含まれない場合は、batch.yamlのコミットを中断する。
