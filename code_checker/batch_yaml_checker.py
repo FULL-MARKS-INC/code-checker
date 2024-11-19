@@ -17,8 +17,6 @@ BATCH_2_YAML_PATH = "clubjt-cdk/def/batch/batch2.yaml"
 class BatchYamlChecker:
     @classmethod
     def check_batch_yaml_files(cls, commit_message_file_path: str):
-        print("[INFO] バッチ定義YAMLファイルのチェックとソートを開始します。")
-
         repo = git.Repo(".")
 
         staged_batch_yaml_paths = [
@@ -46,12 +44,12 @@ class BatchYamlChecker:
         for staged_batch_yaml_paths in staged_batch_yaml_paths:
             is_error |= cls._check_batch_yaml(yaml_path=staged_batch_yaml_paths)
 
-        print("[INFO] バッチ定義YAMLファイルのチェックとソートを終了します。")
-
         sys.exit(is_error)
 
     @classmethod
     def _check_batch_yaml(cls, yaml_path: str) -> bool:
+        print(f"[INFO] {yaml_path}のチェックとソートを開始します。")
+
         with open(yaml_path, "r") as f:
             definition = yaml.load(f)
 
@@ -71,6 +69,8 @@ class BatchYamlChecker:
 
             with open(yaml_path, "w", encoding="utf-8") as f2:
                 yaml.dump(definition, f2)
+
+        print(f"[INFO] {yaml_path}のチェックとソートを終了します。")
 
         return is_error
 
