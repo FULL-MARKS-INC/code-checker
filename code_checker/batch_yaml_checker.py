@@ -10,31 +10,52 @@ yaml = YAML(typ="rt")
 # クォーテーションを保持する
 yaml.preserve_quotes = True
 
+BATCH_YAML_PATH = "clubjt-cdk/def/batch/batch.yaml"
+BATCH_2_YAML_PATH = "clubjt-cdk/def/batch/batch2.yaml"
+
 
 class BatchYamlChecker:
     @classmethod
-    def check_batch_yaml(cls, commit_message_file_path: str):
+    def check_batch_yaml_files(cls, commit_message_file_path: str):
+        print("[INFO] バッチ定義YAMLファイルのチェックとソートを開始します。")
+
         repo = git.Repo(".")
-        # print(repo.head.reference.message)
-        print([item.a_path for item in repo.index.diff('HEAD')])
+
+        staged_batch_yaml_paths = [
+            staged_file.a_path
+            for staged_file in repo.index.diff("HEAD")
+            if staged_file.a_path in [BATCH_YAML_PATH, BATCH_2_YAML_PATH]
+        ]
+
+        if not staged_batch_yaml_paths:
+            exit(0)
 
         # clubjt-server/.git/COMMIT_EDITMSGに記載されたコミットメッセージに「batch.yaml変更」が含まれない場合は、batch.yamlのコミットを中断する。
- 
+
         with open(commit_message_file_path, "r") as f:
             commit_message = f.read()
 
-        if yaml_path.endswith("batch.yaml") and "batch.yaml変更" not in commit_message:
+        if BATCH_YAML_PATH in staged_batch_yaml_paths and "batch.yaml変更" not in commit_message:
             print(
                 "[ERROR] batch.yamlの変更は制限されています。batch2.yamlを変更するか、コミットメッセージに「batch.yaml変更」を記載してください。"
             )
             exit(1)
 
+        is_error = False
+
+        for staged_file_path in staged_file_paths:
+            is_error |= cls._check_batch_yaml(yaml_path=staged_file_path)
+
+        print("[INFO] バッチ定義YAMLファイルのチェックとソートを終了します。")
+
+        sys.exit(is_error)
+
+    @classmethod
+    def _check_batch_yaml(cls, yaml_path: str) -> bool:
         with open(yaml_path, "r") as f:
             definition = yaml.load(f)
 
         is_error = False
-
-        print("[INFO] バッチ定義YAMLファイルのチェックとソートを開始します。")
 
         if batches := definition.get("batches"):
             batch_items = batches.items()
@@ -51,9 +72,7 @@ class BatchYamlChecker:
             with open(yaml_path, "w", encoding="utf-8") as f2:
                 yaml.dump(definition, f2)
 
-        print("[INFO] バッチ定義YAMLファイルのチェックとソートを終了します。")
-
-        sys.exit(int(is_error))
+        return is_error
 
 
 def main():
@@ -66,7 +85,7 @@ def main():
         print("[ERROR] 引数が不足しています")
         sys.exit(1)
 
-    BatchYamlChecker.check_batch_yaml(commit_message_file_path=sys.argv[1])
+    BatchYamlChecker.check_batch_yaml_files(commit_message_file_path=sys.argv[1])
 
 
 if __name__ == "__main__":
