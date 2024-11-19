@@ -1,3 +1,4 @@
+import pathlib
 import sys
 
 from ruamel.yaml import YAML
