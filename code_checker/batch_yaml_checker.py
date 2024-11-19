@@ -10,7 +10,7 @@ yaml.preserve_quotes = True
 
 class BatchYamlChecker:
     @classmethod
-    def check_batch_yaml(cls, yaml_path: str, commit_message_file_path: str):
+    def check_batch_yaml(cls, commit_message_file_path: str):
         # clubjt-server/.git/COMMIT_EDITMSGに記載されたコミットメッセージに「batch.yaml変更」が含まれない場合は、batch.yamlのコミットを中断する。
  
         with open(commit_message_file_path, "r") as f:
@@ -50,8 +50,15 @@ class BatchYamlChecker:
 
 
 def main():
+    """
+    commit-msgで呼び出されるので、一度のコミットにつき一度だけ実行される。
+    （pre-commitとは異なり、コミットするファイルの数だけ実行されることはない。）
+    """
+
     if len(sys.argv) < 3:
         print("[ERROR] 引数が不足しています")
         sys.exit(1)
 
-    BatchYamlChecker.check_batch_yaml(yaml_path=sys.argv[1], commit_message_file_path=sys.argv[2])
+    # BatchYamlChecker.check_batch_yaml(commit_message_file_path=sys.argv[1])
+    print(pathlib.Path(sys.argv[1]))
+    exit(1)
