@@ -1,6 +1,8 @@
 import pathlib
 import sys
 
+import git
+
 from ruamel.yaml import YAML
 
 # typ="rt" → コメントを保持する
@@ -12,6 +14,10 @@ yaml.preserve_quotes = True
 class BatchYamlChecker:
     @classmethod
     def check_batch_yaml(cls, commit_message_file_path: str):
+        repo = git.Repo(".")
+        print(repo.head.reference.message)
+        print([item.a_path for item in repo.index.diff('HEAD')])
+
         # clubjt-server/.git/COMMIT_EDITMSGに記載されたコミットメッセージに「batch.yaml変更」が含まれない場合は、batch.yamlのコミットを中断する。
  
         with open(commit_message_file_path, "r") as f:
@@ -60,9 +66,7 @@ def main():
         print("[ERROR] 引数が不足しています")
         sys.exit(1)
 
-    # BatchYamlChecker.check_batch_yaml(commit_message_file_path=sys.argv[1])
-    print(sys.argv)
-    exit(1)
+    BatchYamlChecker.check_batch_yaml(commit_message_file_path=sys.argv[1])
 
 
 if __name__ == "__main__":
