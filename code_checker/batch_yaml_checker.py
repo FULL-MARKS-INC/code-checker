@@ -61,5 +61,10 @@ def main():
         sys.exit(1)
 
     # BatchYamlChecker.check_batch_yaml(commit_message_file_path=sys.argv[1])
-    print(pathlib.Path(sys.argv[1]))
+    print(pathlib.Path(__file__))
+    print(pathlib.Path(f"clubjt-server/{sys.argv[1]}").parent.parent)
     exit(1)
+
+
+if __name__ == "__main__":
+    main()
