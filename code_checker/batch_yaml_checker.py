@@ -55,7 +55,7 @@ def main():
     （pre-commitとは異なり、コミットするファイルの数だけ実行されることはない。）
     """
 
-    if len(sys.argv) < 3:
+    if len(sys.argv) < 2:
         print("[ERROR] 引数が不足しています")
         sys.exit(1)
 
