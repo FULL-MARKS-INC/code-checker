@@ -15,7 +15,7 @@ class BatchYamlChecker:
     @classmethod
     def check_batch_yaml(cls, commit_message_file_path: str):
         repo = git.Repo(".")
-        print(repo.head.reference.message)
+        # print(repo.head.reference.message)
         print([item.a_path for item in repo.index.diff('HEAD')])
 
         # clubjt-server/.git/COMMIT_EDITMSGに記載されたコミットメッセージに「batch.yaml変更」が含まれない場合は、batch.yamlのコミットを中断する。
