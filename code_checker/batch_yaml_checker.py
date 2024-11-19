@@ -86,7 +86,3 @@ def main():
         sys.exit(1)
 
     BatchYamlChecker.check_batch_yaml_files(commit_message_file_path=sys.argv[1])
-
-
-if __name__ == "__main__":
-    main()
