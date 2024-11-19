@@ -39,13 +39,12 @@ class BatchYamlChecker:
             print(
                 "[ERROR] batch.yamlの変更は制限されています。batch2.yamlを変更するか、コミットメッセージに「batch.yaml変更」を記載してください。"
             )
-            print(commit_message)
             exit(1)
 
         is_error = False
 
-        for staged_file_path in staged_file_paths:
-            is_error |= cls._check_batch_yaml(yaml_path=staged_file_path)
+        for staged_batch_yaml_paths in staged_batch_yaml_paths:
+            is_error |= cls._check_batch_yaml(yaml_path=staged_batch_yaml_paths)
 
         print("[INFO] バッチ定義YAMLファイルのチェックとソートを終了します。")
 
