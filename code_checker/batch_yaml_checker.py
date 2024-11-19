@@ -39,6 +39,7 @@ class BatchYamlChecker:
             print(
                 "[ERROR] batch.yamlの変更は制限されています。batch2.yamlを変更するか、コミットメッセージに「batch.yaml変更」を記載してください。"
             )
+            print(commit_message)
             exit(1)
 
         is_error = False
