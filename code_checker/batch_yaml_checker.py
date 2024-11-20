@@ -34,11 +34,9 @@ class BatchYamlChecker:
             definitions["batches"] = dict(sorted(batches.items()))
 
         with open(sys.argv[1], "w", encoding="utf-8") as f:
-            yaml.dump(definitions, f)
+            f.write(yaml.dump(definitions, f))
 
         print(f"[INFO] {sys.argv[1]}のソートを終了します。")
-
-        sys.exit(1)
 
     @classmethod
     def check_batch_yaml_files(cls):
