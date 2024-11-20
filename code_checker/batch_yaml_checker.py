@@ -40,10 +40,11 @@ class BatchYamlChecker:
                     )
                     is_error = True
 
-            definitions["batches"] = dict(sorted(batches.items()))
-
-        with open(sys.argv[1], "w", encoding="utf-8") as f:
-            yaml.dump(definitions, f)
+            # チェックエラーがなければソート
+            if not is_error:
+                definitions["batches"] = dict(sorted(batches.items()))
+                with open(sys.argv[1], "w", encoding="utf-8") as f:
+                    yaml.dump(definitions, f)
 
         print(f"[INFO] {sys.argv[1]}のチェックとソートを終了します。")
 
