@@ -28,8 +28,10 @@ class BatchYamlChecker:
 
         print(f"[INFO] {sys.argv[1]}のソートを開始します。")
 
-        if batches := definition.get("batches"):
-            definition["batches"] = dict(sorted(batches.items()))
+        definitions = cls._load_batch_definitions(yaml_path=sys.argv[1])
+
+        if batches := definitions.get("batches"):
+            definitions["batches"] = dict(sorted(batches.items()))
 
         with open(sys.argv[1], "w", encoding="utf-8") as f:
             yaml.dump(definition, f)
