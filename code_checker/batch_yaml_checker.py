@@ -39,7 +39,7 @@ class BatchYamlChecker:
                         f"[ERROR] バッチ名は共通部分を含めて最大64文字になるよう設定してください。{batch_name}(clubjt-cron-{batch_name}-production)"
                     )
                     is_error = True
-            
+
             definitions["batches"] = dict(sorted(batches.items()))
 
         with open(sys.argv[1], "w", encoding="utf-8") as f:
@@ -92,5 +92,5 @@ class BatchYamlChecker:
     def _load_batch_definitions(cls, yaml_path: str):
         with open(yaml_path, "r", encoding="utf-8") as f:
             definitions = yaml.load(f)
-        
+
         return definitions
