@@ -39,6 +39,7 @@ class PythonCodeChecker:
     @classmethod
     def check_todo_comments(cls):
         print(sys.argv)
+        exit(1)
 
 
 def main():
