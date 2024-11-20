@@ -32,7 +32,7 @@ class BatchYamlChecker:
 
         is_error = False
 
-        if batches := cls._load_batch_definitions(yaml_path=yaml_path).get("batches"):
+        if batches := definitions.get("batches"):
             for batch_name, _ in batches.items():
                 if len(f"clubjt-cron-{batch_name}-production") > 64:
                     print(
