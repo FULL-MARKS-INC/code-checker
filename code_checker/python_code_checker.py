@@ -36,6 +36,10 @@ class PythonCodeChecker:
 
         return False
 
+    @classmethod
+    def check_todo_comments(cls):
+        print(sys.argv)
+
 
 def main():
     if len(sys.argv) < 2:

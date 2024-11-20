@@ -13,3 +13,8 @@
   description: check batch yaml
   entry: batch-yaml-checker
   language: python
+- id: todo-checker
+  name: Todo-Checker
+  description: check todo comments
+  entry: todo-checker
+  language: python
