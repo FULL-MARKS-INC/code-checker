@@ -66,7 +66,7 @@ class BatchYamlChecker:
 
         # lubjt-server/.git/COMMIT_EDITMSGに記載されたコミットメッセージに「batch.yaml変更」が含まれない場合は、batch.yamlのコミットを中断する。
 
-        with open(commit_message_file_path, "r", encoding="utf-8") as f:
+        with open(sys.argv[1], "r", encoding="utf-8") as f:
             commit_message = f.read()
 
         if BATCH_YAML_PATH in staged_batch_yaml_paths and "batch.yaml変更" not in commit_message:
@@ -77,8 +77,8 @@ class BatchYamlChecker:
 
         is_error = False
 
-        for staged_batch_yaml_paths in staged_batch_yaml_paths:
-            is_error |= cls._check_batch_yaml(yaml_path=staged_batch_yaml_paths)
+        for staged_batch_yaml_path in staged_batch_yaml_paths:
+            is_error |= cls._check_batch_yaml(yaml_path=staged_batch_yaml_path)
 
         sys.exit(is_error)
 
