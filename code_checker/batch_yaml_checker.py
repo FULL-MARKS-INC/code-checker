@@ -29,12 +29,14 @@ class BatchYamlChecker:
         print(f"[INFO] {sys.argv[1]}のソートを開始します。")
 
         definitions = cls._load_batch_definitions(yaml_path=sys.argv[1])
+        print(definitions)
 
         if batches := definitions.get("batches"):
             definitions["batches"] = dict(sorted(batches.items()))
 
         with open(sys.argv[1], "w", encoding="utf-8") as f:
-            f.write(yaml.dump(definitions))
+            print(definitions)
+            yaml.dump(definitions, f)
 
         print(f"[INFO] {sys.argv[1]}のソートを終了します。")
 
@@ -85,6 +87,7 @@ class BatchYamlChecker:
     @classmethod
     def _load_batch_definitions(cls, yaml_path: str):
         with open(yaml_path, "r", encoding="utf-8") as f:
+            print(yaml_path)
             return yaml.load(f)
 
     @classmethod
