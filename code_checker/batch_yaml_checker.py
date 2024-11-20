@@ -16,7 +16,40 @@ BATCH_2_YAML_PATH = "clubjt-cdk/def/batch/batch2.yaml"
 
 class BatchYamlChecker:
     @classmethod
-    def check_batch_yaml_files(cls, commit_message_file_path: str):
+    def sort_batch_yaml(cls):
+        """
+        バッチ定義ファイルをソート
+        pre-commit hookで実行（batch.yamlとbatch2.yamlの変更をトリガにする）
+        """
+
+        if len(sys.argv) < 2:
+            print("[ERROR] バッチ定義ファイルパスの取得に失敗しました。ソートを中断します。")
+            sys.exit(1)
+
+        print(f"[INFO] {sys.argv[1]}のソートを開始します。")
+
+        if batches := definition.get("batches"):
+            definition["batches"] = dict(sorted(batches.items()))
+
+        with open(sys.argv[1], "w") as f:
+            yaml.dump(definition, f)
+
+        print(f"[INFO] {sys.argv[1]}のソートを終了します。")
+
+    @classmethod
+    def check_batch_yaml_files(cls):
+        """
+        バッチ定義ファイルの内容をチェック
+        commit-msg hookで実行（clubjt-server/.git/COMMIT_EDITMSGの変更をトリガにする）
+
+        commit-msgで呼び出されるので、一度のコミットにつき一度だけ実行される。
+        （pre-commitとは異なり、コミットするファイルの数だけ実行されることはない。）
+        """
+
+        if len(sys.argv) < 2:
+            print("[ERROR] COMMIT_EDITMSGのパス取得に失敗しました。ソートを中断します。")
+            sys.exit(1)
+
         repo = git.Repo(".")
 
         staged_batch_yaml_paths = [
@@ -29,7 +62,7 @@ class BatchYamlChecker:
             # batch.yamlとbatch.yamlのどちらも変更が入っていなければチェックを実施しない
             exit(0)
 
-        # clubjt-server/.git/COMMIT_EDITMSGに記載されたコミットメッセージに「batch.yaml変更」が含まれない場合は、batch.yamlのコミットを中断する。
+        # lubjt-server/.git/COMMIT_EDITMSGに記載されたコミットメッセージに「batch.yaml変更」が含まれない場合は、batch.yamlのコミットを中断する。
 
         with open(commit_message_file_path, "r", encoding="utf-8") as f:
             commit_message = f.read()
@@ -48,42 +81,24 @@ class BatchYamlChecker:
         sys.exit(is_error)
 
     @classmethod
-    def _check_batch_yaml(cls, yaml_path: str) -> bool:
-        print(f"[INFO] {yaml_path}のチェックとソートを開始します。")
-
+    def _load_batch_definitions(cls, yaml_path: str):
         with open(yaml_path, "r", encoding="utf-8") as f:
-            definition = yaml.load(f)
+            return yaml.load(f)
+
+    @classmethod
+    def _check_batch_yaml(cls, yaml_path: str) -> bool:
+        print(f"[INFO] {yaml_path}のチェックを開始します。")
 
         is_error = False
 
-        if batches := definition.get("batches"):
-            batch_items = batches.items()
-
-            for batch_name, _ in batch_items:
+        if batches := cls._load_batch_definitions(yaml_path=yaml_path).get("batches"):
+            for batch_name, _ in batches.items():
                 if len(f"clubjt-cron-{batch_name}-production") > 64:
                     print(
                         f"[ERROR] バッチ名は共通部分を含めて最大64文字になるよう設定してください。{batch_name}(clubjt-cron-{batch_name}-production)"
                     )
                     is_error = True
 
-            definition["batches"] = dict(sorted(batch_items))
-
-            with open(yaml_path, "w", encoding="utf-8") as f2:
-                yaml.dump(definition, f2)
-
-        print(f"[INFO] {yaml_path}のチェックとソートを終了します。")
+        print(f"[INFO] {yaml_path}のチェックを終了します。")
 
         return is_error
-
-
-def main():
-    """
-    commit-msgで呼び出されるので、一度のコミットにつき一度だけ実行される。
-    （pre-commitとは異なり、コミットするファイルの数だけ実行されることはない。）
-    """
-
-    if len(sys.argv) < 2:
-        print("[ERROR] 引数が不足しています")
-        sys.exit(1)
-
-    BatchYamlChecker.check_batch_yaml_files(commit_message_file_path=sys.argv[1])
