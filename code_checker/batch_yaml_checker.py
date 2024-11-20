@@ -38,6 +38,8 @@ class BatchYamlChecker:
 
         print(f"[INFO] {sys.argv[1]}のソートを終了します。")
 
+        sys.exit(1)
+
     @classmethod
     def check_batch_yaml_files(cls):
         """
