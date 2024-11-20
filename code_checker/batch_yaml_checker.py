@@ -18,30 +18,41 @@ class BatchYamlChecker:
     @classmethod
     def sort_batch_yaml(cls):
         """
-        バッチ定義ファイルをソート
+        バッチ定義ファイルをソートし、バッチ名の長さをチェック
         pre-commit hookで実行（batch.yamlとbatch2.yamlの変更をトリガにする）
         """
 
         if len(sys.argv) < 2:
-            print("[ERROR] バッチ定義ファイルパスの取得に失敗しました。ソートを中断します。")
+            print("[ERROR] バッチ定義ファイルパスの取得に失敗しました。チェックとソートを中断します。")
             sys.exit(1)
 
-        print(f"[INFO] {sys.argv[1]}のソートを開始します。")
+        print(f"[INFO] {sys.argv[1]}のチェックとソートを開始します。")
 
         definitions = cls._load_batch_definitions(yaml_path=sys.argv[1])
 
-        if batches := definitions.get("batches"):
+        is_error = False
+
+        if batches := cls._load_batch_definitions(yaml_path=yaml_path).get("batches"):
+            for batch_name, _ in batches.items():
+                if len(f"clubjt-cron-{batch_name}-production") > 64:
+                    print(
+                        f"[ERROR] バッチ名は共通部分を含めて最大64文字になるよう設定してください。{batch_name}(clubjt-cron-{batch_name}-production)"
+                    )
+                    is_error = True
+            
             definitions["batches"] = dict(sorted(batches.items()))
 
         with open(sys.argv[1], "w", encoding="utf-8") as f:
             yaml.dump(definitions, f)
 
-        print(f"[INFO] {sys.argv[1]}のソートを終了します。")
+        print(f"[INFO] {sys.argv[1]}のチェックとソートを終了します。")
+
+        exit(is_error)
 
     @classmethod
-    def check_batch_yaml_files(cls):
+    def check_staged_batch_yaml_files(cls):
         """
-        バッチ定義ファイルの内容をチェック
+        コミットメッセージをチェックし、特定の単語が含まれていないかつbatch.yamlがコミットされる場合は、コミットを中断
         commit-msg hookで実行（clubjt-server/.git/COMMIT_EDITMSGの変更をトリガにする）
 
         commit-msgで呼び出されるので、一度のコミットにつき一度だけ実行される。
@@ -75,12 +86,7 @@ class BatchYamlChecker:
             )
             exit(1)
 
-        is_error = False
-
-        for staged_batch_yaml_path in staged_batch_yaml_paths:
-            is_error |= cls._check_batch_yaml(yaml_path=staged_batch_yaml_path)
-
-        sys.exit(is_error)
+        exit(0)
 
     @classmethod
     def _load_batch_definitions(cls, yaml_path: str):
@@ -88,21 +94,3 @@ class BatchYamlChecker:
             definitions = yaml.load(f)
         
         return definitions
-
-    @classmethod
-    def _check_batch_yaml(cls, yaml_path: str) -> bool:
-        print(f"[INFO] {yaml_path}のチェックを開始します。")
-
-        is_error = False
-
-        if batches := cls._load_batch_definitions(yaml_path=yaml_path).get("batches"):
-            for batch_name, _ in batches.items():
-                if len(f"clubjt-cron-{batch_name}-production") > 64:
-                    print(
-                        f"[ERROR] バッチ名は共通部分を含めて最大64文字になるよう設定してください。{batch_name}(clubjt-cron-{batch_name}-production)"
-                    )
-                    is_error = True
-
-        print(f"[INFO] {yaml_path}のチェックを終了します。")
-
-        return is_error

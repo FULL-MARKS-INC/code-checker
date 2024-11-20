@@ -15,7 +15,7 @@ gitpython = "^3.1.43"
 [tool.poetry.scripts]
 code-checker = 'code_checker.python_code_checker:main'
 batch-yaml-sorter = 'code_checker.batch_yaml_checker:BatchYamlChecker.sort_batch_yaml'
-batch-yaml-checker = 'code_checker.batch_yaml_checker:BatchYamlChecker.check_batch_yaml_files'
+batch-yaml-checker = 'code_checker.batch_yaml_checker:BatchYamlChecker.check_staged_batch_yaml_files'
 
 
 [tool.poetry.group.dev.dependencies]
