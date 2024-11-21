@@ -61,9 +61,11 @@ class SourceCodeChecker:
             sys.exit(1)
 
         print(f"{sys.argv[1]}のマージ前チェックを開始します。")
-        exit(1)
 
         source_code = cls._load_source_code(file_path=sys.argv[1])
+        print(source_code)
+
+        exit(1)
 
         if "TODO" in source_code:
             print(git.Repo(".").active_branch.name)
