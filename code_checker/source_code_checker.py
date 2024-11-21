@@ -65,10 +65,15 @@ class SourceCodeChecker:
         repo = git.Repo(".")
         print(repo.active_branch.name)
 
-        with open("/.git/MERGE_MSG", "r") as f:
-            print("-------------------------------¥n")
-            print(f.read())
-            print("-------------------------------¥n")
+        merge_base = repo.merge_base(repo.head.commit, repo.branches[current_branch].commit) 
+        merge_branch = None 
+        
+        for branch in repo.branches: 
+            if branch.commit in merge_base: 
+                merge_branch = branch.name 
+                break
+
+        print(merge_branch)
 
         source_code = cls._load_source_code(file_path=sys.argv[1])
 
