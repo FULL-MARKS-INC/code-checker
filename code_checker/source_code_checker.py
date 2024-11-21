@@ -1,6 +1,7 @@
 import re
-import subprocess
 import sys
+
+import git
 
 
 class SourceCodeChecker:
@@ -64,15 +65,7 @@ class SourceCodeChecker:
         source_code = cls._load_source_code(file_path=sys.argv[1])
 
         if "TODO" in source_code:
-            merged_branch = subprocess.run(
-                "MERGED_BRANCH=${GIT_REFLOG_ACTION#merge } && echo $MERGED_BRANCH",
-                shell=True,
-                capture_output=True,
-                text=True,
-            ).stdout.strip()
-            print(merged_branch)
-            exit(1)
-            if re.match("production|stage|.+-MAIN", merged_branch):
+            if re.match("production|stage|.+-MAIN", git.Repo(".").active_branch.name):
                 print("[ERROR] production/stage/*-MAINブランチにマージするには、TODOコメントを削除してください。")
                 exit(1)
 
