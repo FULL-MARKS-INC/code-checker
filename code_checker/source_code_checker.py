@@ -1,7 +1,6 @@
 import re
+import subprocess
 import sys
-
-import git
 
 
 class SourceCodeChecker:
@@ -40,7 +39,7 @@ class SourceCodeChecker:
             if log_level in source_code:
                 print(f"[ERROR] ログレベル{log_level}はlevel引数に記載してください。")
                 is_error = True
-        
+
         # if re.search(r"(if|elif).+\.(created_at|createdAt|updatedAt|updated_at).+", source_code)
         #     print(f"[ERROR] 評価実装にcreate_at・updated_atを使用しないでください。")
         #     is_error = True
@@ -60,24 +59,22 @@ class SourceCodeChecker:
             print("[ERROR] チェック対象ファイルのパス取得に失敗しました。チェックを中断します。")
             sys.exit(1)
 
-        print(f"{sys.argv[1]}マージ前チェックを開始します。")
-
-        import subprocess
-        # 実行するシェルコマンド 
-        command = 'MERGED_BRANCH=${GIT_REFLOG_ACTION#merge } && echo $MERGED_BRANCH' 
-        
-        # コマンドを実行し、結果を取得 
-        result = subprocess.run(command, shell=True, capture_output=True, text=True)
-
-        print(result)
+        print(f"{sys.argv[1]}のマージ前チェックを開始します。")
 
         source_code = cls._load_source_code(file_path=sys.argv[1])
 
         if "TODO" in source_code:
-            print("[ERROR] TODOコメントを削除してください。")
-            exit(1)
+            merged_branch = subprocess.run(
+                "MERGED_BRANCH=${GIT_REFLOG_ACTION#merge } && echo $MERGED_BRANCH",
+                shell=True,
+                capture_output=True,
+                text=True,
+            ).stdout.strip()
+            if re.match("production|stage|.+-MAIN", merged_branch):
+                print("[ERROR] production/stage/*-MAINブランチにマージするには、TODOコメントを削除してください。")
+                exit(1)
 
-        print(f"{sys.argv[1]}マージ前チェックを終了します。")
+        print(f"{sys.argv[1]}のマージ前チェックを終了します。")
 
     @classmethod
     def _load_source_code(cls, file_path: str):
