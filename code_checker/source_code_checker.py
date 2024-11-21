@@ -65,6 +65,11 @@ class SourceCodeChecker:
         repo = git.Repo(".")
         print(repo.active_branch.name)
 
+        with open("/.git/MERGE_MSG", "r") as f:
+            print("-------------------------------¥n")
+            print(f.read())
+            print("-------------------------------¥n")
+
         source_code = cls._load_source_code(file_path=sys.argv[1])
 
         if "TODO" in source_code:
