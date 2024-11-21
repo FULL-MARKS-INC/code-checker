@@ -72,16 +72,8 @@ class SourceCodeChecker:
         print(f"{sys.argv[1]}マージ前チェックを終了します。")
 
     @classmethod
-    def _load_source_code(cls):
+    def _load_source_code(cls, file_path: str):
         with open(file_path, "r", encoding="utf_8_sig") as f:
             code = f.read()
 
         return code
-
-
-def main():
-    if len(sys.argv) < 2:
-        print("[ERROR] Pythonファイルが指定されていません")
-        sys.exit(1)
-
-    PythonCodeChecker.check_python_code(file_path=sys.argv[1])
