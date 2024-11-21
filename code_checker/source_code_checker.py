@@ -65,6 +65,8 @@ class SourceCodeChecker:
         source_code = cls._load_source_code(file_path=sys.argv[1])
 
         if "TODO" in source_code:
+            print(git.Repo(".").active_branch.name)
+            exit(1)
             if re.match("production|stage|.+-MAIN", git.Repo(".").active_branch.name):
                 print("[ERROR] production/stage/*-MAINブランチにマージするには、TODOコメントを削除してください。")
                 exit(1)
