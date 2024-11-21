@@ -62,16 +62,8 @@ class SourceCodeChecker:
 
         print(f"{sys.argv[1]}マージ前チェックを開始します。")
 
-        repo = git.Repo(".")
-        print(repo.active_branch.name)
-
-        merge_base = repo.merge_base(repo.head.commit, repo.branches[repo.active_branch.name].commit) 
-        merge_branch = None 
-        
-        for branch in repo.branches: 
-            if branch.commit in merge_base: 
-                merge_branch = branch.name 
-                break
+        import subprocess
+        merge_branch = subprocess.check_output(["echo", "{GIT_REFLOG_ACTION#merge }"])
 
         print(merge_branch)
 
