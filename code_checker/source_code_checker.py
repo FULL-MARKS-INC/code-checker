@@ -70,6 +70,8 @@ class SourceCodeChecker:
                 capture_output=True,
                 text=True,
             ).stdout.strip()
+            print(merged_branch)
+            exit(1)
             if re.match("production|stage|.+-MAIN", merged_branch):
                 print("[ERROR] production/stage/*-MAINブランチにマージするには、TODOコメントを削除してください。")
                 exit(1)
