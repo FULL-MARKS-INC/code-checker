@@ -13,8 +13,8 @@ gitpython = "^3.1.43"
 
 
 [tool.poetry.scripts]
-code-checker = 'code_checker.python_code_checker:PythonCodeChecker.check_source_code'
-merged-code-checker = 'code_checker.python_code_checker:PythonCodeChecker.check_merged_source_code'
+code-checker = 'code_checker.source_code_checker:SourceCodeChecker.check_source_code'
+merged-code-checker = 'code_checker.source_code_checker:SourceCodeChecker.check_merged_source_code'
 batch-yaml-sorter = 'code_checker.batch_yaml_checker:BatchYamlChecker.sort_batch_yaml'
 batch-yaml-checker = 'code_checker.batch_yaml_checker:BatchYamlChecker.check_staged_batch_yaml_files'
 
