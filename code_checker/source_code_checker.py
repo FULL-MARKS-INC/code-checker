@@ -65,7 +65,7 @@ class SourceCodeChecker:
         repo = git.Repo(".")
         print(repo.active_branch.name)
 
-        merge_base = repo.merge_base(repo.head.commit, repo.branches[current_branch].commit) 
+        merge_base = repo.merge_base(repo.head.commit, repo.branches[repo.active_branch.name].commit) 
         merge_branch = None 
         
         for branch in repo.branches: 
