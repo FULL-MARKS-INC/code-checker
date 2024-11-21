@@ -63,7 +63,7 @@ class SourceCodeChecker:
         print(f"{sys.argv[1]}マージ前チェックを開始します。")
 
         import subprocess
-        merge_branch = subprocess.check_output(["echo", "{GIT_REFLOG_ACTION#merge }"])
+        merge_branch = subprocess.check_output(["echo", "${GIT_REFLOG_ACTION#merge }"])
 
         print(merge_branch)
 
