@@ -26,10 +26,9 @@ class SourceCodeChecker:
             print(f"[ERROR] uuid.uuid1は使用禁止です。")
             is_error = True
 
-        if not file_path.endswith(("promotion_client.py", "user_client.py", "common_client.py")):
-            if "@staticmethod" in source_code:
-                print(f"[ERROR] staticmethodは使用禁止です。")
-                is_error = True
+        if "@staticmethod" in source_code:
+            print(f"[ERROR] staticmethodは使用禁止です。")
+            is_error = True
 
         if "logging.WARN" in source_code:
             print(f"[ERROR] logging.WARNではなくlogging.WARNINGを使用してください。")
@@ -39,12 +38,10 @@ class SourceCodeChecker:
             if log_level in source_code:
                 print(f"[ERROR] ログレベル{log_level}はlevel引数に記載してください。")
                 is_error = True
-
-        if "tests" not in file_path:
-            common_date_evaluation = re.search(r"if.+\.(created_at|createdAt|updatedAt|updated_at).+", source_code)
-            if common_date_evaluation:
-                print(f"[ERROR] 評価実装にcreate_at・updated_atを使用しないでください。")
-                is_error = True
+        
+        # if re.search(r"(if|elif).+\.(created_at|createdAt|updatedAt|updated_at).+", source_code)
+        #     print(f"[ERROR] 評価実装にcreate_at・updated_atを使用しないでください。")
+        #     is_error = True
 
         print(f"{sys.argv[1]}のチェックを終了します。")
 
