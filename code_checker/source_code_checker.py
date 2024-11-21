@@ -16,7 +16,7 @@ class SourceCodeChecker:
 
         print(f"{sys.argv[1]}のチェックを開始します。")
 
-        source_code = cls._load_source_code()
+        source_code = cls._load_source_code(file_path=sys.argv[1])
 
         is_error = False
 
@@ -63,7 +63,7 @@ class SourceCodeChecker:
 
         print(f"{sys.argv[1]}マージ前チェックを開始します。")
 
-        source_code = cls._load_source_code()
+        source_code = cls._load_source_code(file_path=sys.argv[1])
 
         if "TODO" in source_code:
             print("[ERROR] TODOコメントを削除してください。")
