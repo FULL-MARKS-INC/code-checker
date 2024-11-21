@@ -61,6 +61,7 @@ class SourceCodeChecker:
             sys.exit(1)
 
         print(f"{sys.argv[1]}のマージ前チェックを開始します。")
+        exit(1)
 
         source_code = cls._load_source_code(file_path=sys.argv[1])
 
