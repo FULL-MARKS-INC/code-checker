@@ -1,6 +1,8 @@
 import re
 import sys
 
+import git
+
 
 class SourceCodeChecker:
     @classmethod
@@ -59,6 +61,9 @@ class SourceCodeChecker:
             sys.exit(1)
 
         print(f"{sys.argv[1]}マージ前チェックを開始します。")
+
+        repo = git.Repo(".")
+        print(repo.active_branch.name)
 
         source_code = cls._load_source_code(file_path=sys.argv[1])
 
