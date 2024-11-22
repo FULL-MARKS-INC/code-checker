@@ -41,9 +41,9 @@ class SourceCodeChecker:
                 print(f"[ERROR] ログレベル{log_level}はlevel引数に記載してください。")
                 is_error = True
 
-        # if re.search(r"(if|elif).+\.(created_at|createdAt|updatedAt|updated_at).+", source_code)
-        #     print(f"[ERROR] 評価実装にcreate_at・updated_atを使用しないでください。")
-        #     is_error = True
+        if re.search(r"(if|elif).+\.(created_at|createdAt|updatedAt|updated_at).+", source_code)
+            print(f"[ERROR] 評価実装にcreate_at・updated_atを使用しないでください。")
+            is_error = True
 
         print(f"{sys.argv[1]}のチェックを終了します。")
 
