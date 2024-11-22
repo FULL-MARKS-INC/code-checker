@@ -1,15 +1,20 @@
 - id: code-checker
   name: Code-Checker
-  description: check python code
   entry: code-checker
+  language: python
+- id: merged-code-checker
+  name: Merged-Code-Checker
+  entry: merged-code-checker
   language: python
 - id: batch-yaml-sorter
   name: Batch-Yaml-Sorter
-  description: sort batch yaml
   entry: batch-yaml-sorter
   language: python
 - id: batch-yaml-checker
   name: Batch-Yaml-Checker
-  description: check batch yaml
   entry: batch-yaml-checker
+  language: python
+- id: merge-branch-checker
+  name: Merge-Branch-Checker
+  entry: merge-branch-checker
   language: python
