@@ -15,7 +15,7 @@ class BranchChecker:
         repo = git.Repo(".")
 
         # 先頭の"merge"を除いた文字列がブランチ名
-        merged_branch_name = os.environ.get("GIT_REFLOG_ACTION", "")[5:]
+        merged_branch_name = os.environ.get("GIT_REFLOG_ACTION", "").removeprefix("merge ")
 
         if repo.active_branch.name == "sweets/PRE/GEN4_PROGRAM_UPDATE-MAIN":
             if not re.match(r"^(origin/)?(production|sweets/PRE/GEN4_PROGRAM_UPDATE-(?!.*MAIN).+)$", merged_branch_name):
