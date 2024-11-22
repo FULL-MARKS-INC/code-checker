@@ -32,7 +32,7 @@ class BranchChecker:
                 print("sweets/POST/GEN4_PROGRAM_UPDATE-MAINへのマージは、productionかsweets/POST/GEN4_PROGRAM_UPDATE-*からのみ可能です。")
                 exit(1)
 
-        if re.match(r"^sweets/POST/GEN4_PROGRAM_UPDATE-(?!.*MAIN).+$", repo.active_branch.name)
+        if re.match(r"^sweets/POST/GEN4_PROGRAM_UPDATE-(?!.*MAIN).+$", repo.active_branch.name):
             if not re.match(r"^(origin/)?sweets/POST/GEN4_PROGRAM_UPDATE-MAIN$", merged_branch_name):
                 print("sweets/POST/GEN4_PROGRAM_UPDATE-*へのマージは、sweets/POST/GEN4_PROGRAM_UPDATE-MAINからのみ可能です。")
                 print(1)
