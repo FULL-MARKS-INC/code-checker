@@ -76,7 +76,7 @@ class SourceCodeChecker:
 
     @classmethod
     def _load_source_code(cls, file_path: str):
-        with open(file_path, "r", encoding="utf_8_sig") as f:
+        with open(file_path, "r", encoding="utf_8") as f:
             code = f.read()
 
         return code
