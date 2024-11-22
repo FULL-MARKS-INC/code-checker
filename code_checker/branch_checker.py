@@ -1,5 +1,5 @@
+import os
 import re
-import subprocess
 
 import git
 
@@ -14,12 +14,8 @@ class BranchChecker:
 
         repo = git.Repo(".")
 
-        merged_branch_name = subprocess.run(
-            "MERGED_BRANCH_NAME=${GIT_REFLOG_ACTION#merge } && echo $MERGED_BRANCH_NAME",
-            shell=True,
-            capture_output=True,
-            text=True,
-        ).stdout.strip()
+        # 先頭の"merge"を除いた文字列がブランチ名
+        merged_branch_name = os.environ.get("GIT_REFLOG_ACTION", "")[5:]
 
         if repo.active_branch.name == "sweets/PRE/GEN4_PROGRAM_UPDATE-MAIN":
             if not re.match(r"^(origin/)?(production|sweets/PRE/GEN4_PROGRAM_UPDATE-(?!.*MAIN).+)$", merged_branch_name):
