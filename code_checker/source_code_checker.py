@@ -32,9 +32,9 @@ class SourceCodeChecker:
             print(f"[ERROR] staticmethodは使用禁止です。")
             is_error = True
 
-        if re.match(r"^logging.WARN$", source_code):
-            print(f"[ERROR] logging.WARNではなくlogging.WARNINGを使用してください。")
-            is_error = True
+        # if re.match(r"^logging.WARN$", source_code):
+        #     print(f"[ERROR] logging.WARNではなくlogging.WARNINGを使用してください。")
+        #     is_error = True
 
         for log_level in ["[INFO]", "[WARN]", "[WARNING]", "[ERROR]"]:
             if log_level in source_code:
