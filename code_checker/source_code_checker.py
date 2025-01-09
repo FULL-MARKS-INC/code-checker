@@ -17,8 +17,6 @@ class SourceCodeChecker:
             print("[ERROR] 実装ファイルパスの取得に失敗しました。チェックを中断します。")
             sys.exit(1)
 
-        print(sys.argv)
-
         print(f"{sys.argv[1]}のチェックを開始します。")
 
         source_code = cls._load_source_code(file_path=sys.argv[1])
