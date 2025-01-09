@@ -1,4 +1,5 @@
 import re
+import subprocess
 import sys
 
 import git
@@ -45,6 +46,12 @@ class SourceCodeChecker:
 
         if re.search(r"(if|elif).+\.(created_at|createdAt|updatedAt|updated_at).+", source_code):
             print(f"[ERROR] if・elifでcreate_at・updated_atの値を比較しないでください。")
+            is_error = True
+
+        # 指定したファイルの差分に `# type: ignore` が含まれているかチェック
+        diff = subprocess.run(["git", "diff", "--cached", sys.argv[1]], capture_output=True, text=True)
+        print(diff)
+        if bool(re.search(r"#\s*type:\s*ignore", diff.stdout)):
             is_error = True
 
         print(f"{sys.argv[1]}のチェックを終了します。")
