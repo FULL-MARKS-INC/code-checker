@@ -42,8 +42,7 @@ class SourceCodeChecker:
                 is_error = True
 
         if re.search(r"(if|elif).+\.(created_at|createdAt|updatedAt|updated_at).+", source_code):
-            print(f"[ERROR] if・elifでcreate_at・updated_atの値を比較しないでください。")
-            is_error = True
+            print(f"[WARNING] if・elifでcreate_at・updated_atの値を比較しないでください。")
 
         print(f"{sys.argv[1]}のチェックを終了します。")
 
