@@ -63,7 +63,7 @@ class SourceCodeChecker:
         if violations:
             print("[ERROR] `# type: ignore` を追加しないでください", file=sys.stderr)
             for line in violations:
-                print(f"  - {line.strip()}", file=sys.stderr)
+                print(f"  + {line.strip()}", file=sys.stderr)
             is_error = True
 
         print(f"{sys.argv[1]}のチェックを終了します。")
