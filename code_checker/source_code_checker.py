@@ -58,6 +58,8 @@ class SourceCodeChecker:
 
         violations = [line for line in added_lines if bool(re.search(r"#\s*type:\s*ignore", line))]
 
+        print('[DEBUG] 1/15 17:00')
+
         if violations:
             print("[ERROR] `# type: ignore` を追加しないでください", file=sys.stderr)
             for line in violations:
