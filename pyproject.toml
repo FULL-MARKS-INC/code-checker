@@ -18,6 +18,7 @@ merged-code-checker = 'code_checker.source_code_checker:SourceCodeChecker.check_
 batch-yaml-sorter = 'code_checker.batch_yaml_checker:BatchYamlChecker.sort_batch_yaml'
 batch-yaml-checker = 'code_checker.batch_yaml_checker:BatchYamlChecker.check_staged_batch_yaml_files'
 merge-branch-checker = 'code_checker.branch_checker:BranchChecker.check_merge_branch'
+pr-status-checker = 'code_checker.pr_status_checker:PRStatusChecker.check_pr_status'
 
 
 [tool.poetry.group.dev.dependencies]

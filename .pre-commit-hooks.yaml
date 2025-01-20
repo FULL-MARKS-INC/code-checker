@@ -18,3 +18,7 @@
   name: Merge-Branch-Checker
   entry: merge-branch-checker
   language: python
+- id: pr-status-checker
+  name: Pr-Status-Checker
+  entry: pr-status-checker
+  language: python
