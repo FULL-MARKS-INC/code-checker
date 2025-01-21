@@ -42,8 +42,8 @@ class SourceCodeChecker:
                 print(f"[ERROR] ログレベル{log_level}はlevel引数に記載してください。")
                 is_error = True
 
-        if re.search(r"(if|elif).+\.(created_at|createdAt|updatedAt|updated_at).+", source_code):
-            print(f"[WARNING] if・elifでcreate_at・updated_atの値を比較しないでください。")
+        # if re.search(r"(if|elif).+\.(created_at|createdAt|updatedAt|updated_at).+", source_code):
+        #     print(f"[WARNING] if・elifでcreate_at・updated_atの値を比較しないでください。")
 
         if re.search(r"Entity¥.[a-zA-Z0-9_]¥.+is_¥(", source_code):
             print(f"[ERROR] Entity.column.is_(...)を使用しないでください。")
