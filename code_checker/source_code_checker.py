@@ -23,7 +23,7 @@ class SourceCodeChecker:
         # source_code = cls._load_source_code(file_path=sys.argv[1])
         try:
             source_code = cls._load_source_code(file_path=sys.argv[1])
-        except UnicodeDecodeError as e:
+        except Exception as e:
             print(f"{sys.argv[1]} にutf-8でない文字コードが含まれています。", e)
 
         is_error = False
@@ -57,7 +57,7 @@ class SourceCodeChecker:
         # ファイルの差分に `# type: ignore` が含まれているかチェック
         if sys.argv[1].endswith(".py"):
             repo = git.Repo(".")
-            diff_output = repo.git.diff('--cached', '-U0')
+            diff_output = repo.git.diff('--cached', '-U0', sys.argv[1])
 
             added_lines = [line[1:] for line in diff_output.splitlines() if line.startswith("+") and not line.startswith("+++")]
 
