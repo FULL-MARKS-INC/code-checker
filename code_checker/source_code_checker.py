@@ -50,22 +50,23 @@ class SourceCodeChecker:
         #     is_error = True
 
         # ファイルの差分に `# type: ignore` が含まれているかチェック
-        diff = subprocess.run(
-            ["git", "diff", "--cached", "-U0"],  # 差分取得 (コンテキスト行なし)
-            capture_output=True,
-            text=True,
-            check=True,
-        )
+        if sys.argv[1].endswith(".py"):
+            diff = subprocess.run(
+                ["git", "diff", "--cached", "-U0"],  # 差分取得 (コンテキスト行なし)
+                capture_output=True,
+                text=True,
+                check=True,
+            )
 
-        added_lines = [line[1:] for line in diff.stdout.splitlines() if line.startswith("+") and not line.startswith("+++")]
+            added_lines = [line[1:] for line in diff.stdout.splitlines() if line.startswith("+") and not line.startswith("+++")]
 
-        violations = [line for line in added_lines if bool(re.search(r"#\s*type:\s*ignore", line))]
+            violations = [line for line in added_lines if bool(re.search(r"#\s*type:\s*ignore", line))]
 
-        if violations:
-            print("[ERROR] `# type: ignore` を追加しないでください", file=sys.stderr)
-            for line in violations:
-                print(f"  + {line.strip()}", file=sys.stderr)
-            is_error = True
+            if violations:
+                print("[ERROR] `# type: ignore` を追加しないでください", file=sys.stderr)
+                for line in violations:
+                    print(f"{sys.argv[1]}:  + {line.strip()}", file=sys.stderr)
+                is_error = True
 
         print(f"{sys.argv[1]}のチェックを終了します。")
 
