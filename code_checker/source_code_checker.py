@@ -1,6 +1,7 @@
 import re
 import subprocess
 import sys
+from linecache import cache
 
 import git
 
@@ -19,7 +20,11 @@ class SourceCodeChecker:
 
         print(f"{sys.argv[1]}のチェックを開始します。")
 
-        source_code = cls._load_source_code(file_path=sys.argv[1])
+        # source_code = cls._load_source_code(file_path=sys.argv[1])
+        try:
+            source_code = cls._load_source_code(file_path=sys.argv[1])
+        except UnicodeDecodeError as e:
+            print(f"{sys.argv[1]} にutf-8でない文字コードが含まれています。", e)
 
         is_error = False
 
@@ -51,14 +56,10 @@ class SourceCodeChecker:
 
         # ファイルの差分に `# type: ignore` が含まれているかチェック
         if sys.argv[1].endswith(".py"):
-            diff = subprocess.run(
-                ["git", "diff", "--cached", "-U0"],  # 差分取得 (コンテキスト行なし)
-                capture_output=True,
-                text=True,
-                check=True,
-            )
+            repo = git.Repo(".")
+            diff_output = repo.git.diff('--cached', '-U0')
 
-            added_lines = [line[1:] for line in diff.stdout.splitlines() if line.startswith("+") and not line.startswith("+++")]
+            added_lines = [line[1:] for line in diff_output.splitlines() if line.startswith("+") and not line.startswith("+++")]
 
             violations = [line for line in added_lines if bool(re.search(r"#\s*type:\s*ignore", line))]
 
