@@ -77,7 +77,7 @@ class BatchYamlChecker:
             # batch.yaml/batch2.yaml/batch_bpn.yamlのどれにも変更が入っていなければチェックを実施しない
             exit(0)
 
-        # lubjt-server/.git/COMMIT_EDITMSGに記載されたコミットメッセージに「batch.yaml変更」が含まれない場合は、batch.yamlのコミットを中断する。
+        # clubjt-server/.git/COMMIT_EDITMSGに記載されたコミットメッセージに「batch.yaml変更」が含まれない場合は、batch.yamlのコミットを中断する。
 
         with open(sys.argv[1], "r", encoding="utf-8") as f:
             commit_message = f.read()
