@@ -1,7 +1,6 @@
 import re
-import subprocess
+import os
 import sys
-from linecache import cache
 
 import git
 
@@ -13,6 +12,7 @@ class SourceCodeChecker:
         実装チェック
         pre-commit hookで実行
         """
+        print(f"[DEBUG]{os.getpid}: {sys.argv}")
 
         if len(sys.argv) < 2:
             print("[ERROR] 実装ファイルパスの取得に失敗しました。チェックを中断します。")
@@ -21,10 +21,6 @@ class SourceCodeChecker:
         print(f"{sys.argv[1]}のチェックを開始します。")
 
         source_code = cls._load_source_code(file_path=sys.argv[1])
-        # try:
-        #     source_code = cls._load_source_code(file_path=sys.argv[1])
-        # except Exception as e:
-        #     print(f"{sys.argv[1]} にutf-8でない文字コードが含まれています。", e)
 
         is_error = False
 
