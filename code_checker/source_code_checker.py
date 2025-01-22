@@ -20,6 +20,7 @@ class SourceCodeChecker:
         print(f"{sys.argv[1]}のチェックを開始します。")
 
         source_code = cls._load_source_code(file_path=sys.argv[1])
+        print(sys.argv)
 
         is_error = False
 
