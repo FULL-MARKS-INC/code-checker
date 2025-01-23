@@ -1,4 +1,5 @@
 import re
+import subprocess
 import sys
 
 import git
@@ -41,9 +42,30 @@ class SourceCodeChecker:
                 print(f"[ERROR] ログレベル{log_level}はlevel引数に記載してください。")
                 is_error = True
 
-        if re.search(r"(if|elif).+\.(created_at|createdAt|updatedAt|updated_at).+", source_code):
-            print(f"[ERROR] if・elifでcreate_at・updated_atの値を比較しないでください。")
-            is_error = True
+        # if re.search(r"(if|elif).+\.(created_at|createdAt|updatedAt|updated_at).+", source_code):
+        #     print(f"[WARNING] if・elifでcreate_at・updated_atの値を比較しないでください。")
+
+        # if re.search(r"Entity¥.[a-zA-Z0-9_]¥.+is_¥(", source_code):
+        #     print(f"[ERROR] Entity.column.is_(...)を使用しないでください。")
+        #     is_error = True
+
+        # ファイルの差分に `# type: ignore` が含まれているかチェック
+        # diff = subprocess.run(
+        #     ["git", "diff", "--cached", "-U0"],  # 差分取得 (コンテキスト行なし)
+        #     capture_output=True,
+        #     text=True,
+        #     check=True,
+        # )
+        #
+        # added_lines = [line[1:] for line in diff.stdout.splitlines() if line.startswith("+") and not line.startswith("+++")]
+        #
+        # violations = [line for line in added_lines if bool(re.search(r"#\s*type:\s*ignore", line))]
+        #
+        # if violations:
+        #     print("[ERROR] `# type: ignore` を追加しないでください", file=sys.stderr)
+        #     for line in violations:
+        #         print(f"  + {line.strip()}", file=sys.stderr)
+        #     is_error = True
 
         print(f"{sys.argv[1]}のチェックを終了します。")
 

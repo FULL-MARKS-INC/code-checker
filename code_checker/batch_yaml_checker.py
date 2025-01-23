@@ -12,6 +12,7 @@ yaml.preserve_quotes = True
 
 BATCH_YAML_PATH = "clubjt-cdk/def/batch/batch.yaml"
 BATCH_2_YAML_PATH = "clubjt-cdk/def/batch/batch2.yaml"
+BATCH_BPM_YAML_PATH = "clubjt-cdk/def/batch/batch_bpm.yaml"
 
 
 class BatchYamlChecker:
@@ -19,7 +20,7 @@ class BatchYamlChecker:
     def sort_batch_yaml(cls):
         """
         バッチ定義ファイルをソートし、バッチ名の長さをチェック
-        pre-commit hookで実行（batch.yamlとbatch2.yamlの変更をトリガにする）
+        pre-commit hookで実行（batch.yaml/batch2.yaml/batch_bpm.yamlの変更をトリガにする）
         """
 
         if len(sys.argv) < 2:
@@ -69,14 +70,14 @@ class BatchYamlChecker:
         staged_batch_yaml_paths = [
             staged_file.a_path
             for staged_file in repo.index.diff("HEAD")
-            if staged_file.a_path in [BATCH_YAML_PATH, BATCH_2_YAML_PATH]
+            if staged_file.a_path in [BATCH_YAML_PATH, BATCH_2_YAML_PATH, BATCH_BPM_YAML_PATH]
         ]
 
         if not staged_batch_yaml_paths:
-            # batch.yamlとbatch.yamlのどちらも変更が入っていなければチェックを実施しない
+            # batch.yaml/batch2.yaml/batch_bpn.yamlのどれにも変更が入っていなければチェックを実施しない
             exit(0)
 
-        # lubjt-server/.git/COMMIT_EDITMSGに記載されたコミットメッセージに「batch.yaml変更」が含まれない場合は、batch.yamlのコミットを中断する。
+        # clubjt-server/.git/COMMIT_EDITMSGに記載されたコミットメッセージに「batch.yaml変更」が含まれない場合は、batch.yamlのコミットを中断する。
 
         with open(sys.argv[1], "r", encoding="utf-8") as f:
             commit_message = f.read()
