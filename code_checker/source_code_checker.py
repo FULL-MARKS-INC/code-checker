@@ -12,60 +12,63 @@ class SourceCodeChecker:
         実装チェック
         pre-commit hookで実行
         """
-        print(f"[DEBUG]{os.getpid}: {sys.argv}")
+        print(f"[DEBUG]{os.getpid()}: {sys.argv}")
 
         if len(sys.argv) < 2:
             print("[ERROR] 実装ファイルパスの取得に失敗しました。チェックを中断します。")
             sys.exit(1)
 
-        print(f"{sys.argv[1]}のチェックを開始します。")
-
-        source_code = cls._load_source_code(file_path=sys.argv[1])
-
         is_error = False
+        for filepath in sys.argv[1:]:
+            print(f"{filepath}のチェックを開始します。")
 
-        if ("import uuid" in source_code and "uuid.uuid1()" in source_code) or (
-            "from uuid import uuid1" in source_code and "uuid1()" in source_code
-        ):
-            print(f"[ERROR] uuid.uuid1は使用禁止です。")
-            is_error = True
+            source_code = cls._load_source_code(file_path=filepath)
 
-        if "@staticmethod" in source_code:
-            print(f"[ERROR] staticmethodは使用禁止です。")
-            is_error = True
-
-        # if re.match(r"^logging.WARN$", source_code):
-        #     print(f"[ERROR] logging.WARNではなくlogging.WARNINGを使用してください。")
-        #     is_error = True
-
-        for log_level in ["[INFO]", "[WARN]", "[WARNING]", "[ERROR]"]:
-            if log_level in source_code:
-                print(f"[ERROR] ログレベル{log_level}はlevel引数に記載してください。")
+            if ("import uuid" in source_code and "uuid.uuid1()" in source_code) or (
+                "from uuid import uuid1" in source_code and "uuid1()" in source_code
+            ):
+                print(f"[ERROR] uuid.uuid1は使用禁止です。")
                 is_error = True
 
-        # if re.search(r"(if|elif).+\.(created_at|createdAt|updatedAt|updated_at).+", source_code):
-        #     print(f"[WARNING] if・elifでcreate_at・updated_atの値を比較しないでください。")
-
-        # if re.search(r"Entity¥.[a-zA-Z0-9_]¥.+is_¥(", source_code):
-        #     print(f"[ERROR] Entity.column.is_(...)を使用しないでください。")
-        #     is_error = True
-
-        # ファイルの差分に `# type: ignore` が含まれているかチェック
-        if sys.argv[1].endswith(".py"):
-            repo = git.Repo(".")
-            diff_output = repo.git.diff('--cached', '-U0', sys.argv[1])
-
-            added_lines = [line[1:] for line in diff_output.splitlines() if line.startswith("+") and not line.startswith("+++")]
-
-            violations = [line for line in added_lines if bool(re.search(r"#\s*type:\s*ignore", line))]
-
-            if violations:
-                print("[ERROR] `# type: ignore` を追加しないでください", file=sys.stderr)
-                for line in violations:
-                    print(f"+ {line.strip()}", file=sys.stderr)
+            if "@staticmethod" in source_code:
+                print(f"[ERROR] staticmethodは使用禁止です。")
                 is_error = True
 
-        print(f"{sys.argv[1]}のチェックを終了します。")
+            # if re.match(r"^logging.WARN$", source_code):
+            #     print(f"[ERROR] logging.WARNではなくlogging.WARNINGを使用してください。")
+            #     is_error = True
+
+            for log_level in ["[INFO]", "[WARN]", "[WARNING]", "[ERROR]"]:
+                if log_level in source_code:
+                    print(f"[ERROR] ログレベル{log_level}はlevel引数に記載してください。")
+                    is_error = True
+
+            # if re.search(r"(if|elif).+\.(created_at|createdAt|updatedAt|updated_at).+", source_code):
+            #     print(f"[WARNING] if・elifでcreate_at・updated_atの値を比較しないでください。")
+
+            # if re.search(r"Entity¥.[a-zA-Z0-9_]¥.+is_¥(", source_code):
+            #     print(f"[ERROR] Entity.column.is_(...)を使用しないでください。")
+            #     is_error = True
+
+            # ファイルの差分に `# type: ignore` が含まれているかチェック
+            if filepath.endswith(".py"):
+                repo = git.Repo(".")
+                diff_output = repo.git.diff('--cached', '-U0', filepath)
+
+                added_lines = [line[1:] for line in diff_output.splitlines() if line.startswith("+") and not line.startswith("+++")]
+
+                violations = [line for line in added_lines if bool(re.search(r"#\s*type:\s*ignore", line))]
+
+                if violations:
+                    print("[ERROR] `# type: ignore` を追加しないでください", file=sys.stderr)
+                    for line in violations:
+                        print(f"+ {line.strip()}", file=sys.stderr)
+                    is_error = True
+
+            print(f"{filepath}のチェックを終了します。")
+
+            if is_error:
+                exit(is_error)
 
         exit(is_error)
 
