@@ -129,6 +129,9 @@ class PRStatusChecker:
         results = cls._run_command(["gh", "pr", "view", pr_number, "--json", "commits"])
         commits = json.loads(results)["commits"]
 
+        print("###")
+        print(commits)
+
         commit_author_emails = []
         for commit in commits:
             # parentsの数が1より大きい場合はマージコミットなのでスキップ
