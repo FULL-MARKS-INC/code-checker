@@ -134,7 +134,7 @@ class PRStatusChecker:
 
         commit_author_emails = []
         for commit in commits:
-            if commit["messageHeadline"].find("Merge"):
+            if commit["messageHeadline"] and commit["messageHeadline"].find("Merge"):
                 continue
 
             for author in commit["authors"]:
