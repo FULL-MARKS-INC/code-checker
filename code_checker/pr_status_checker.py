@@ -45,7 +45,6 @@ class PRStatusChecker:
     def _get_source_branch(cls) -> str | None:
         """マージ元のブランチ名取得"""
         if not os.environ.get("GIT_REFLOG_ACTION", "").startswith("merge "):
-            print("マージ処理中ではありません。スキップします。")
             return None
 
         merged_branch_name = os.environ.get("GIT_REFLOG_ACTION", "").removeprefix("merge ")
