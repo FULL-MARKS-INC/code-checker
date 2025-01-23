@@ -48,6 +48,7 @@ class PRStatusChecker:
             return None
 
         merged_branch_name = os.environ.get("GIT_REFLOG_ACTION", "").removeprefix("merge ")
+        print("ブランチ名：", merged_branch_name)
         return merged_branch_name
 
     @classmethod
