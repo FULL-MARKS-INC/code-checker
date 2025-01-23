@@ -134,8 +134,7 @@ class PRStatusChecker:
 
         commit_author_emails = []
         for commit in commits:
-            # parentsの数が1より大きい場合はマージコミットなのでスキップ
-            if len(commit["parents"]) > 1:
+            if commit["messageHeadline"].find("Merge"):
                 continue
 
             for author in commit["authors"]:
