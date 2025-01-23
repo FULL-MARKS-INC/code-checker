@@ -44,12 +44,12 @@ class PRStatusChecker:
     @classmethod
     def _get_source_branch(cls) -> str | None:
         """マージ元のブランチ名取得"""
-        print(os.environ.get("GIT_REFLOG_ACTION", ""))
-        print("")
         if not os.environ.get("GIT_REFLOG_ACTION", "").startswith("merge "):
             return None
 
-        merged_branch_name = os.environ.get("GIT_REFLOG_ACTION", "").removeprefix("merge origin/")
+        print(os.environ.get("GIT_REFLOG_ACTION", ""))
+        print("")
+        merged_branch_name = os.environ.get("GIT_REFLOG_ACTION", "").removeprefix("merge ")
         return merged_branch_name
 
     @classmethod
