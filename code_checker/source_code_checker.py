@@ -12,7 +12,6 @@ class SourceCodeChecker:
         実装チェック
         pre-commit hookで実行
         """
-        print(f"[DEBUG]{os.getpid()}: {sys.argv}")
 
         if len(sys.argv) < 2:
             print("[ERROR] 実装ファイルパスの取得に失敗しました。チェックを中断します。")
