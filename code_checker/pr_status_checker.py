@@ -1,6 +1,7 @@
 import os
 import subprocess
 import json
+import time
 from datetime import datetime
 
 
@@ -9,6 +10,7 @@ class PRStatusChecker:
     def check_pr_status(cls) -> int:
         print("GitHub PR Checker を開始します...", datetime.now().isoformat())
 
+        time.sleep(3)
         try:
             # ブランチ名の抽出
             branch_name = cls._get_source_branch()
