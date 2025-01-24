@@ -16,8 +16,7 @@ class PRStatusChecker:
             branch_name = cls._get_source_branch()
             if not branch_name:
                 print("マージ中ではありません。スキップします。")
-                cls.reset_to_before_merge()
-                return 1
+                return 0
 
             # PRのステータスチェック
             success = cls._check_pr_status(branch_name)
