@@ -10,7 +10,7 @@ from pathlib import Path
 class PRStatusChecker:
     @classmethod
     def check_pr_status(cls) -> int:
-        print("GitHub PR Checker を開始します...", datetime.now().isoformat())
+        print("GitHub PR Checker を開始します...")
 
         time.sleep(3)
         try:
@@ -134,10 +134,6 @@ class PRStatusChecker:
         """PRのコミットが全てFMs社員のものか判定"""
         results = cls._run_command(["gh", "pr", "view", pr_number, "--json", "commits"])
         commits = json.loads(results)["commits"]
-
-        print("###")
-        print(commits)
-
         commit_author_emails = []
         for commit in commits:
             if commit["messageHeadline"] and commit["messageHeadline"].find("Merge"):
