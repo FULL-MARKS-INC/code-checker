@@ -1,8 +1,10 @@
 import os
+import re
 import subprocess
 import json
 import time
 from datetime import datetime
+from pathlib import Path
 
 
 class PRStatusChecker:
@@ -43,13 +45,18 @@ class PRStatusChecker:
     @classmethod
     def _get_source_branch(cls) -> str | None:
         """マージ元のブランチ名取得"""
-        if not os.environ.get("GIT_REFLOG_ACTION", "").startswith("merge origin/"):
+        git_dir = cls._run_command(["git", "rev-parse", "--git-dir"])
+        merge_msg_file = os.getcwd() / Path(git_dir) / "MERGE_MSG"
+
+        if not merge_msg_file.exists():
             return None
 
-        print(os.environ.get("GIT_REFLOG_ACTION", ""))
-        print("")
-        merged_branch_name = os.environ.get("GIT_REFLOG_ACTION", "").removeprefix("merge origin/")
-        return merged_branch_name
+        merge_msg = merge_msg_file.read_text()
+
+        match = re.search(r"Merge\s+branch\s+'([^']+)'", merge_msg)
+        if match:
+            return match.group(1)
+        return None
 
     @classmethod
     def _check_gh_cli(cls) -> bool:
