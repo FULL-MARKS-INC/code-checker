@@ -75,10 +75,8 @@ class PRStatusChecker:
         # GitHub CLIの存在確認
         if os.name == "posix":
             exist_check_command = "which"
-            print("check command is :", exist_check_command)
         else:
             exist_check_command = "where.exe"
-            print("check command is :", exist_check_command)
 
         if subprocess.run([exist_check_command, "gh"], capture_output=True).returncode != 0:
             print("エラー: GitHub CLI (gh) がインストールされていません")
