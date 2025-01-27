@@ -11,8 +11,6 @@ class PRStatusChecker:
     @classmethod
     def check_pr_status(cls) -> int:
         print("GitHub PR Checker を開始します...")
-
-        time.sleep(3)
         try:
             # ブランチ名の抽出
             feature_branch_name = cls._get_feature_branch()
@@ -27,7 +25,7 @@ class PRStatusChecker:
                 and not cls.is_fms_member(feature_branch=feature_branch_name, base_branch=base_branch_name)
             ):
                 print("FMsメンバーではありません。スキップします。")
-                return 1
+                return 0
 
             # PRのステータスチェック
             status = cls._check_pr_status(feature_branch_name)
@@ -140,8 +138,7 @@ class PRStatusChecker:
 
     @classmethod
     def is_fms_member(cls, feature_branch: str, base_branch: str) -> bool:
-        """PRのコミットの1番初めがFMs社員のコミットか確認"""
-
+        """PRのマージコミット以外の初めのコミットがFMs社員のコミットか確認"""
         try:
             commit_shas = cls._run_command(
                 [
@@ -157,22 +154,15 @@ class PRStatusChecker:
             return False
 
         if commit_shas.startswith("fatal"):
-            print("feature branch", feature_branch)
-            print("base brabch", base_branch)
             print("PRのコミットを取得できませんでした。")
             return False
 
-        print("コミットshaリスト")
-        print(commit_shas)
+        for commit_sha in commit_shas.splitlines():
+            commit_sha = commit_sha.strip("'")
+            result = cls._run_command(["git", "show", "-s", "--format=%P#%ae", commit_sha])
 
-        first_commit_sha = commit_shas.splitlines()[0].strip("'")
+            parent_commits, commiter_email = result.split("#")
+            if parent_commits.split() > 1:
+                continue
 
-        print("初めのコミット")
-        print(first_commit_sha)
-
-        commiter_email = cls._run_command(["git", "show", "-s", "--format=%ae", first_commit_sha])
-
-        print("email")
-        print(commiter_email)
-
-        return "@fullmarks.co.jp" in commiter_email
+            return "@fullmarks.co.jp" in commiter_email
