@@ -97,7 +97,7 @@ class PRStatusChecker:
             pr_number = prs[0]["number"]
 
             is_fms_member = cls.is_fms_member(str(pr_number))
-            if not is_fms_member:
+            if not is_fms_member: # FMs社員ではない場合はステータスチェックを常にTrueで通過
                 return True
 
             print(f"PR #{pr_number} のステータスチェックを確認しています...")
@@ -131,15 +131,11 @@ class PRStatusChecker:
 
     @classmethod
     def is_fms_member(cls, pr_number: str):
-        """PRのコミットが全てFMs社員のものか判定"""
+        """PRのコミットの1番初めがFMs社員のコミットか確認"""
         results = cls._run_command(["gh", "pr", "view", pr_number, "--json", "commits"])
         commits = json.loads(results)["commits"]
-        commit_author_emails = []
         for commit in commits:
             if commit["messageHeadline"] and commit["messageHeadline"].find("Merge"):
                 continue
 
-            for author in commit["authors"]:
-                commit_author_emails.append(author["email"])
-
-        return all([email for email in commit_author_emails if email.find("@fullmarks.co.jp")])
+            return commit["authors"][0]["email"].find("@fullmarks.co.jp")
