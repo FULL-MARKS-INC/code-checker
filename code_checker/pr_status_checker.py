@@ -20,9 +20,14 @@ class PRStatusChecker:
                 print("マージ中ではありません。スキップします。")
                 return 0
 
-            base_brach_name = cls._get_base_branch()
-            if not cls.is_fms_member(feature_brach=feature_branch_name, base_branch=base_brach_name):
+            base_branch_name = cls._get_base_branch()
+            if (
+                feature_branch_name
+                and base_branch_name
+                and not cls.is_fms_member(feature_branch=feature_branch_name, base_branch=base_branch_name)
+            ):
                 print("FMsメンバーではありません。スキップします。")
+                return 1
 
             # PRのステータスチェック
             status = cls._check_pr_status(feature_branch_name)
@@ -146,16 +151,28 @@ class PRStatusChecker:
         cls._run_command(["git", "checkout", "-"])
 
     @classmethod
-    def is_fms_member(cls, feature_brach: str, base_branch: str) -> bool:
+    def is_fms_member(cls, feature_branch: str, base_branch: str) -> bool:
         """PRのコミットの1番初めがFMs社員のコミットか確認"""
-        first_commit_sha = cls._run_command(["git", "log", "--reverse", "--format='%H'", f"origin/{base_branch}..origin/{feature_brach}", "|", "head", "-n", "1"])
-        
+        first_commit_sha = cls._run_command(
+            [
+                "git",
+                "log",
+                "--reverse",
+                "--format='%H'",
+                f"origin/{base_branch}..origin/{feature_branch}",
+                "|",
+                "head",
+                "-n",
+                "1",
+            ]
+        )
+
         if first_commit_sha.startswith("fatal"):
-            print("feature branch", feature_brach)
+            print("feature branch", feature_branch)
             print("base brabch", base_branch)
-            print("PRのコミット取得できませんでした。")
+            print("PRのコミットを取得できませんでした。")
             return False
 
         commiter_email = cls._run_command(["git", "show", "-s", "--format=$ae", first_commit_sha])
 
-        return commiter_email.find("@fullmarks.co.jp")
+        return "@fullmarks.co.jp" in commiter_email
