@@ -170,7 +170,7 @@ class PRStatusChecker:
         print("初めのコミット")
         print(first_commit_sha)
 
-        commiter_email = cls._run_command(["git", "show", "-s", "--format=$ae", first_commit_sha])
+        commiter_email = cls._run_command(["git", "show", "-s", "--format=%ae", first_commit_sha])
 
         print("email")
         print(commiter_email)
