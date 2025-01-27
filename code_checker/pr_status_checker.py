@@ -15,16 +15,19 @@ class PRStatusChecker:
         time.sleep(3)
         try:
             # ブランチ名の抽出
-            branch_name = cls._get_source_branch()
-            if not branch_name:
+            feature_branch_name = cls._get_feature_branch()
+            if not feature_branch_name:
                 print("マージ中ではありません。スキップします。")
                 return 0
 
+            base_brach_name = cls._get_base_branch()
+            if not cls.is_fms_member(feature_brach=feature_branch_name, base_branch=base_brach_name):
+                print("FMsメンバーではありません。スキップします。")
+
             # PRのステータスチェック
-            success = cls._check_pr_status(branch_name)
-            if not success:
+            status = cls._check_pr_status(feature_branch_name)
+            if not status:
                 print("\nPRの概要欄を確認後チェックをつけてください。")
-                print("\nPushを中断します。")
                 cls.reset_to_before_merge()
                 return 1
 
@@ -43,7 +46,7 @@ class PRStatusChecker:
         return result.stdout.strip()
 
     @classmethod
-    def _get_source_branch(cls) -> str | None:
+    def _get_feature_branch(cls) -> str | None:
         """マージ元のブランチ名取得"""
         git_dir = cls._run_command(["git", "rev-parse", "--git-dir"])
         merge_msg_file = os.getcwd() / Path(git_dir) / "MERGE_MSG"
@@ -54,6 +57,23 @@ class PRStatusChecker:
         merge_msg = merge_msg_file.read_text()
 
         match = re.search(r"Merge\s+branch\s+'([^']+)'", merge_msg)
+        if match:
+            return match.group(1)
+        return None
+
+    @classmethod
+    def _get_base_branch(cls) -> str | None:
+        """マージ先のブランチ名取得"""
+        git_dir = cls._run_command(["git", "rev-parse", "--git-dir"])
+        merge_msg_file = Path(os.getcwd()) / Path(git_dir) / "MERGE_MSG"
+
+        if not merge_msg_file.exists():
+            return None
+
+        merge_msg = merge_msg_file.read_text()
+
+        # マージ先のブランチ名を抽出
+        match = re.search(r"into\\s+'([^']+)'", merge_msg)
         if match:
             return match.group(1)
         return None
@@ -96,10 +116,6 @@ class PRStatusChecker:
 
             pr_number = prs[0]["number"]
 
-            is_fms_member = cls.is_fms_member(str(pr_number))
-            if not is_fms_member: # FMs社員ではない場合はステータスチェックを常にTrueで通過
-                return True
-
             print(f"PR #{pr_number} のステータスチェックを確認しています...")
 
             # ステータスチェックの取得
@@ -111,7 +127,7 @@ class PRStatusChecker:
 
             latest_conclusion = max(
                 status_data, key=lambda x: datetime.fromisoformat(x["completedAt"].replace("Z", ""))
-            ).get("conclusion", False)
+            ).get("conclusion", "FAILURE")
 
             # FAILURE以外（SKIPも）はSUCCESSとみなす
             return not latest_conclusion == "FAILURE"
@@ -130,12 +146,16 @@ class PRStatusChecker:
         cls._run_command(["git", "checkout", "-"])
 
     @classmethod
-    def is_fms_member(cls, pr_number: str):
+    def is_fms_member(cls, feature_brach: str, base_branch: str) -> bool:
         """PRのコミットの1番初めがFMs社員のコミットか確認"""
-        results = cls._run_command(["gh", "pr", "view", pr_number, "--json", "commits"])
-        commits = json.loads(results)["commits"]
-        for commit in commits:
-            if commit["messageHeadline"] and commit["messageHeadline"].find("Merge"):
-                continue
+        first_commit_sha = cls._run_command(["git", "log", "--reverse", "--format='%H'", f"origin/{base_branch}..origin/{feature_brach}", "|", "head", "-n", "1"])
+        
+        if first_commit_sha.startswith("fatal"):
+            print("feature branch", feature_brach)
+            print("base brabch", base_branch)
+            print("PRのコミット取得できませんでした。")
+            return False
 
-            return commit["authors"][0]["email"].find("@fullmarks.co.jp")
+        commiter_email = cls._run_command(["git", "show", "-s", "--format=$ae", first_commit_sha])
+
+        return commiter_email.find("@fullmarks.co.jp")
