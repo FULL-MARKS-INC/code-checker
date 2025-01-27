@@ -162,7 +162,10 @@ class PRStatusChecker:
             result = cls._run_command(["git", "show", "-s", "--format=%P#%ae", commit_sha])
 
             parent_commits, commiter_email = result.split("#")
-            if parent_commits.split() > 1:
+            print("email :", commiter_email)
+            print("commits")
+            print(parent_commits)
+            if len(parent_commits.split()) > 1:
                 continue
 
             return "@fullmarks.co.jp" in commiter_email
