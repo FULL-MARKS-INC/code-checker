@@ -141,25 +141,34 @@ class PRStatusChecker:
     @classmethod
     def is_fms_member(cls, feature_branch: str, base_branch: str) -> bool:
         """PRのコミットの1番初めがFMs社員のコミットか確認"""
-        first_commit_sha = cls._run_command(
-            [
-                "git",
-                "log",
-                "--reverse",
-                "--format='%H'",
-                f"origin/{base_branch}..origin/{feature_branch}",
-                "|",
-                "head",
-                "-n",
-                "1",
-            ]
-        )
 
-        if first_commit_sha.startswith("fatal"):
+        try:
+            commit_shas = cls._run_command(
+                [
+                    "git",
+                    "log",
+                    "--reverse",
+                    "--format='%H'",
+                    f"origin/{base_branch}..origin/{feature_branch}",
+                ]
+            )
+        except Exception as e:
+            print("コミット履歴取得時に問題が発生しました。", e)
+            return False
+
+        if commit_shas.startswith("fatal"):
             print("feature branch", feature_branch)
             print("base brabch", base_branch)
             print("PRのコミットを取得できませんでした。")
             return False
+
+        print("コミットshaリスト")
+        print(commit_shas)
+
+        first_commit_sha = commit_shas.splitlines()[0]
+
+        print("初めのコミット")
+        print(first_commit_sha)
 
         commiter_email = cls._run_command(["git", "show", "-s", "--format=$ae", first_commit_sha])
 
