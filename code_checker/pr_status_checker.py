@@ -165,11 +165,14 @@ class PRStatusChecker:
         print("コミットshaリスト")
         print(commit_shas)
 
-        first_commit_sha = commit_shas.splitlines()[0]
+        first_commit_sha = commit_shas.splitlines()[0].strip("'")
 
         print("初めのコミット")
         print(first_commit_sha)
 
         commiter_email = cls._run_command(["git", "show", "-s", "--format=$ae", first_commit_sha])
+
+        print("email")
+        print(commiter_email)
 
         return "@fullmarks.co.jp" in commiter_email
