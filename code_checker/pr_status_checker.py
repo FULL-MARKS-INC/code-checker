@@ -69,19 +69,7 @@ class PRStatusChecker:
     @classmethod
     def _get_base_branch(cls) -> str | None:
         """マージ先のブランチ名取得"""
-        git_dir = cls._run_command(["git", "rev-parse", "--git-dir"])
-        merge_msg_file = Path(os.getcwd()) / Path(git_dir) / "MERGE_MSG"
-
-        if not merge_msg_file.exists():
-            return None
-
-        merge_msg = merge_msg_file.read_text()
-
-        # マージ先のブランチ名を抽出
-        match = re.search(r"into\\s+'([^']+)'", merge_msg)
-        if match:
-            return match.group(1)
-        return None
+        return cls._run_command(["git", "rev-parse", "--abbrev-ref", "HEAD"])
 
     @classmethod
     def _check_gh_cli(cls) -> bool:
