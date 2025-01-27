@@ -73,7 +73,14 @@ class PRStatusChecker:
     def _check_gh_cli(cls) -> bool:
         """GitHub CLIが利用可能か確認"""
         # GitHub CLIの存在確認
-        if subprocess.run(["which", "gh"], capture_output=True).returncode != 0:
+        if os.name == "posix":
+            exist_check_command = "which"
+            print("check command is :", exist_check_command)
+        else:
+            exist_check_command = "where.exe"
+            print("check command is :", exist_check_command)
+
+        if subprocess.run([exist_check_command, "gh"], capture_output=True).returncode != 0:
             print("エラー: GitHub CLI (gh) がインストールされていません")
             cls.reset_to_before_merge()
             return False
