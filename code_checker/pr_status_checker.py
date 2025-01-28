@@ -69,7 +69,7 @@ class PRStatusChecker:
         return cls._run_command(["git", "rev-parse", "--abbrev-ref", "HEAD"])
 
     @classmethod
-    def _check_gh_cli_availability(cls) -> bool:
+    def _check_github_cli_availability(cls) -> bool:
         """GitHub CLIが利用可能か確認"""
         # GitHub CLIの存在確認
         if os.name == "posix":
@@ -95,7 +95,7 @@ class PRStatusChecker:
     def _check_pr_status(cls, branch_name: str) -> bool:
         """PRのステータスをチェック"""
         # GitHub CLIのチェック
-        if not cls._check_gh_cli_availability():
+        if not cls._check_github_cli_availability():
             return False
 
         print(f"\nブランチ '{branch_name}' のPRを検索しています...")
