@@ -28,8 +28,7 @@ class PRStatusChecker:
                 return 0
 
             # PRのステータスチェック
-            status = cls._check_pr_status(feature_branch_name)
-            if not status:
+            if not cls._check_pr_status(branch_name=feature_branch_name):
                 print("\nPRの概要欄を確認後チェックをつけてください。")
                 cls.reset_to_before_merge()
                 return 1
@@ -70,7 +69,7 @@ class PRStatusChecker:
         return cls._run_command(["git", "rev-parse", "--abbrev-ref", "HEAD"])
 
     @classmethod
-    def _check_gh_cli(cls) -> bool:
+    def _check_gh_cli_availability(cls) -> bool:
         """GitHub CLIが利用可能か確認"""
         # GitHub CLIの存在確認
         if os.name == "posix":
@@ -96,7 +95,7 @@ class PRStatusChecker:
     def _check_pr_status(cls, branch_name: str) -> bool:
         """PRのステータスをチェック"""
         # GitHub CLIのチェック
-        if not cls._check_gh_cli():
+        if not cls._check_gh_cli_availability():
             return False
 
         print(f"\nブランチ '{branch_name}' のPRを検索しています...")
@@ -110,19 +109,20 @@ class PRStatusChecker:
                 print(f"警告: ブランチ {branch_name} のPRが見つかりません")
                 return True
 
+            # 通常の開発フローでは1つのブランチに1つしかPRを立てないため、先頭のPRを取得
             pr_number = prs[0]["number"]
 
             print(f"PR #{pr_number} のステータスチェックを確認しています...")
 
             # ステータスチェックの取得
             status_json = cls._run_command(["gh", "pr", "view", str(pr_number), "--json", "statusCheckRollup"])
-            status_data = json.loads(status_json).get("statusCheckRollup", None)
+            status_logs = json.loads(status_json).get("statusCheckRollup", None)
 
-            if not status_data:
+            if not status_logs:
                 return True
 
             latest_conclusion = max(
-                status_data, key=lambda x: datetime.fromisoformat(x["completedAt"].replace("Z", ""))
+                status_logs, key=lambda status_log: datetime.fromisoformat(status_log["completedAt"].replace("Z", ""))
             ).get("conclusion", "FAILURE")
 
             # FAILURE以外（SKIPも）はSUCCESSとみなす
@@ -145,7 +145,7 @@ class PRStatusChecker:
     def is_fms_member(cls, feature_branch: str, base_branch: str) -> bool:
         """PRのマージコミット以外の初めのコミットがFMs社員のコミットか確認"""
         try:
-            commit_shas = cls._run_command(
+            commit_hashes = cls._run_command(
                 [
                     "git",
                     "log",
@@ -158,13 +158,13 @@ class PRStatusChecker:
             print("コミット履歴取得時に問題が発生しました。", e)
             return False
 
-        if commit_shas.startswith("fatal"):
+        if commit_hashes.startswith("fatal"):
             print("PRのコミットを取得できませんでした。")
             return False
 
-        for commit_sha in commit_shas.splitlines():
-            commit_sha = commit_sha.strip("'")
-            result = cls._run_command(["git", "show", "-s", "--format=%P#%ae", commit_sha])
+        for commit_hash in commit_hashes.splitlines():
+            commit_hash = commit_hash.strip("'")
+            result = cls._run_command(["git", "show", "-s", "--format=%P#%ae", commit_hash])
 
             parent_commits, commiter_email = result.split("#")
             if len(parent_commits.split()) > 1:  # マージコミットはスキップ
