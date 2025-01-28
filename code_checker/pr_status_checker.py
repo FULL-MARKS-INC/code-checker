@@ -121,9 +121,9 @@ class PRStatusChecker:
             if not status_logs:
                 return True
 
-            latest_conclusion = max(
-                status_logs, key=lambda status_log: datetime.fromisoformat(status_log["completedAt"].replace("Z", ""))
-            ).get("conclusion", "FAILURE")
+            latest_conclusion = max(status_logs, key=lambda status_log: status_log["completedAt"]).get(
+                "conclusion", "FAILURE"
+            )
 
             # FAILURE以外（SKIPも）はSUCCESSとみなす
             return not latest_conclusion == "FAILURE"
