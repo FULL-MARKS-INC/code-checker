@@ -9,6 +9,8 @@ from ruamel.yaml import YAML
 yaml = YAML(typ="rt")
 # クォーテーションを保持する
 yaml.preserve_quotes = True
+# 折り返し防止
+yaml.width = 4096
 
 BATCH_YAML_PATH = "clubjt-cdk/def/batch/batch.yaml"
 BATCH_2_YAML_PATH = "clubjt-cdk/def/batch/batch2.yaml"
