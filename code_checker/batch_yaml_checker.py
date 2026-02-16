@@ -88,7 +88,7 @@ class BatchYamlChecker:
             print(
                 "[ERROR] batch.yamlへ新しく定義を追加することは禁止されています。" \
                 "batch2.yamlへ定義を記載してください。" \
-                "※既存バッチの定義変更の場合のみ「batch.yaml変更」とコミットメッセージに記載してください。"
+                "※既存バッチの定義変更の場合のみ「batch.yaml変更」とコミットメッセージに記載してコミットしてください。"
             )
             exit(1)
 
