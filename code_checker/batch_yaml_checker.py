@@ -86,9 +86,9 @@ class BatchYamlChecker:
 
         if BATCH_YAML_PATH in staged_batch_yaml_paths and "batch.yaml変更" not in commit_message:
             print(
-                "[ERROR] batch.yamlへ新しく定義を追加することは禁止されています。" \
-                "batch2.yamlへ定義を記載してください。" \
-                "※既存バッチの定義変更の場合のみ「batch.yaml変更」とコミットメッセージに記載してコミットしてください。"
+                "[ERROR] batch.yamlへ新しく定義を追加することは禁止されています。\n" \
+                "batch2.yamlへ定義を記載してください。\n" \
+                "※既存バッチの定義変更の場合のみ「batch.yaml変更」とコミットメッセージに記載してコミットしてください。\n"
             )
             exit(1)
 
